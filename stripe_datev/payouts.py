@@ -3,6 +3,8 @@ from datetime import datetime, timezone
 
 import stripe
 
+from stripe_datev import config
+
 from . import output
 
 
@@ -41,8 +43,8 @@ def createAccountingRecords(payouts):
       "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(payout["amount"]),
       "Soll/Haben-Kennzeichen": "S",
       "WKZ Umsatz": "EUR",
-      "Konto": "1360",
-      "Gegenkonto (ohne BU-Schlüssel)": "1201",
+      "Konto": config.stripe_transit_account,
+      "Gegenkonto (ohne BU-Schlüssel)": config.bank_account,
       # "BU-Schlüssel": "0",
       # "Belegdatum": output.formatDateDatev(payout["arrival_date"]),
       # "Belegfeld 1": payout["id"],
@@ -86,7 +88,7 @@ def createAccountingRecordsContributions(balance_transactions):
       "Soll/Haben-Kennzeichen": "S",
       "WKZ Umsatz": "EUR",
       "Konto": "4600",
-      "Gegenkonto (ohne BU-Schlüssel)": "1201",
+      "Gegenkonto (ohne BU-Schlüssel)": config.bank_account,
       # "BU-Schlüssel": "0",
       # "Belegdatum": output.formatDateDatev(payout["arrival_date"]),
       # "Belegfeld 1": payout["id"],

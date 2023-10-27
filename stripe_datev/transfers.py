@@ -51,7 +51,7 @@ def createAccountingRecords(transfers):
       "Soll/Haben-Kennzeichen": "S",
       "WKZ Umsatz": "EUR",
       "Konto": transfer["destination"]["metadata"]["accountNumber"],
-      "Gegenkonto (ohne BU-Schlüssel)": "1201",
+      "Gegenkonto (ohne BU-Schlüssel)": config.bank_account,
       "Buchungstext": "Fremdleistung {} anteilig".format(invoiceNumber or transfer.id),
       "Belegfeld 1": transfer.id,
     })

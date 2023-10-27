@@ -12,7 +12,8 @@ def listChargesRaw(fromTime, toTime):
       "gte": int(fromTime.timestamp()),
       "lt": int(toTime.timestamp())
     },
-    expand=["data.customer", "data.customer.tax_ids", "data.invoice"]
+    expand=["data.customer", "data.customer.tax_ids",
+            "data.invoice", "data.refunds"]
   ).auto_paging_iter()
   for charge in charges:
     if not charge.paid or not charge.captured:
@@ -152,7 +153,7 @@ def createAccountingRecords(charges):
       "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(decimal.Decimal(charge.amount) / 100),
       "Soll/Haben-Kennzeichen": "S",
       "WKZ Umsatz": "EUR",
-      "Konto": "1201",
+      "Konto": config.bank_account,
       "Gegenkonto (ohne BU-Schlüssel)": acc_props["customer_account"],
       "Buchungstext": "Stripe Payment ({})".format(charge.id),
       "Belegfeld 1": number,
@@ -163,8 +164,8 @@ def createAccountingRecords(charges):
       "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(fee_amount),
       "Soll/Haben-Kennzeichen": "S",
       "WKZ Umsatz": "EUR",
-      "Konto": "70025",
-      "Gegenkonto (ohne BU-Schlüssel)": "1201",
+      "Konto": config.stripe_fees_account,
+      "Gegenkonto (ohne BU-Schlüssel)": config.bank_account,
       "Buchungstext": "{} ({})".format(fee_desc or "Stripe Fee", charge.id),
     })
 
@@ -178,7 +179,7 @@ def createAccountingRecords(charges):
         "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(decimal.Decimal(refund.amount) / 100),
         "Soll/Haben-Kennzeichen": "H",
         "WKZ Umsatz": "EUR",
-        "Konto": "1201",
+        "Konto": config.bank_account,
         "Gegenkonto (ohne BU-Schlüssel)": acc_props["customer_account"],
         "Buchungstext": "Stripe Payment Refund ({})".format(charge.id),
         "Belegfeld 1": number,

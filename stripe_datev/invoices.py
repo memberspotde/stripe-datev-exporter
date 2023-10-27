@@ -16,11 +16,13 @@ invoices_cached = {}
 def listFinalizedInvoices(fromTime, toTime):
   invoices = stripe.Invoice.list(
     created={
+      "gte": int(fromTime.timestamp()),
       "lt": int(toTime.timestamp())
     },
-    due_date={
-      "gte": int(fromTime.timestamp()),
-    },
+    # customer="cus_MFvzRW4mijf2O5",
+    # due_date={
+    #     "gte": int(fromTime.timestamp()),
+    # },
     expand=["data.customer", "data.customer.tax_ids"]
   ).auto_paging_iter()
 
@@ -32,6 +34,23 @@ def listFinalizedInvoices(fromTime, toTime):
     if finalized_date < fromTime or finalized_date >= toTime:
       # print("Skipping invoice {}, created {} finalized {} due {}".format(invoice.id, created_date, finalized_date, due_date))
       continue
+    invoices_cached[invoice.id] = invoice
+    yield invoice
+
+
+def listCreditedInvoices(fromTime, toTime):
+  invoices = []
+  invoice = stripe.Invoice.retrieve(
+    "in_1NfsczDc6Ds2E1iCk176Wj4Y",
+    # expand=["data.customer", "data.customer.tax_ids"]
+  )
+  invoices.append(invoice)
+
+  for invoice in invoices:
+    finalized_date = datetime.fromtimestamp(
+      invoice.status_transitions.finalized_at, timezone.utc).astimezone(config.accounting_tz)
+    # if finalized_date < fromTime or finalized_date >= toTime:
+    #   continue
     invoices_cached[invoice.id] = invoice
     yield invoice
 
@@ -106,6 +125,7 @@ def getLineItemRecognitionRange(line_item, invoice):
 
 def createRevenueItems(invs):
   revenue_items = []
+  credit_note_pdfs = []
   for invoice in invs:
     if invoice["metadata"].get("stripe-datev-exporter:ignore", "false") == "true":
       print("Skipping invoice {} (ignore)".format(invoice.id))
@@ -122,13 +142,23 @@ def createRevenueItems(invs):
 
     credited_at = None
     credited_amount = None
-    if invoice.post_payment_credit_notes_amount > 0:
+    if invoice.post_payment_credit_notes_amount > 0 or invoice.pre_payment_credit_notes_amount > 0:
       cns = stripe.CreditNote.list(invoice=invoice.id).data
       assert len(cns) == 1
       credited_at = datetime.fromtimestamp(
         cns[0].created, timezone.utc).astimezone(config.accounting_tz)
-      credited_amount = decimal.Decimal(
-        invoice.post_payment_credit_notes_amount) / 100
+      amount = 0
+      if invoice.post_payment_credit_notes_amount > 0:
+        amount += invoice.post_payment_credit_notes_amount
+      if invoice.pre_payment_credit_notes_amount > 0:
+        amount += invoice.pre_payment_credit_notes_amount
+      credited_amount = decimal.Decimal(amount) / 100
+      credit_note_pdfs.append({
+        "invoice_number": invoice.number,
+        "number": cns[0].number,
+        "pdf": cns[0].pdf,
+        "date": credited_at
+      })
 
     line_items = []
 
@@ -219,10 +249,10 @@ def createRevenueItems(invs):
       "is_subscription": is_subscription,
     })
 
-  return revenue_items
+  return revenue_items, credit_note_pdfs
 
 
-def createAccountingRecords(revenue_item):
+def createAccountingRecords(revenue_item, from_date: datetime):
   created = revenue_item["created"]
   amount_with_tax = revenue_item["amount_with_tax"]
   accounting_props = revenue_item["accounting_props"]
@@ -235,12 +265,15 @@ def createAccountingRecords(revenue_item):
   number = revenue_item["number"]
   eu_vat_id = accounting_props["vat_id"] or ""
 
+  if accounting_props["tax_exempt"] == "none" and accounting_props["country"] != "DE":
+    eu_vat_id = accounting_props["country"] or ""
+
   records = []
 
-  if amount_with_tax > 0:
+  if amount_with_tax == 0 and config.book_0_invoices:
     records.append({
       "date": created,
-      "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(amount_with_tax),
+      "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(0.01),
       "Soll/Haben-Kennzeichen": "S",
       "WKZ Umsatz": "EUR",
       "Konto": accounting_props["customer_account"],
@@ -250,6 +283,34 @@ def createAccountingRecords(revenue_item):
       "Belegfeld 1": number,
       "EU-Land u. UStID": eu_vat_id,
     })
+    records.append({
+      "date": created,
+      "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(0.01),
+      "Soll/Haben-Kennzeichen": "H",
+      "WKZ Umsatz": "EUR",
+      "Konto": accounting_props["customer_account"],
+      "Gegenkonto (ohne BU-Schlüssel)": accounting_props["revenue_account"],
+      "BU-Schlüssel": accounting_props["datev_tax_key"],
+      "Buchungstext": text,
+      "Belegfeld 1": number,
+      "EU-Land u. UStID": eu_vat_id,
+    })
+    return records
+
+  if amount_with_tax != 0:
+    if created >= from_date:
+      records.append({
+        "date": created,
+        "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(amount_with_tax),
+        "Soll/Haben-Kennzeichen": "S",
+        "WKZ Umsatz": "EUR",
+        "Konto": accounting_props["customer_account"],
+        "Gegenkonto (ohne BU-Schlüssel)": accounting_props["revenue_account"],
+        "BU-Schlüssel": accounting_props["datev_tax_key"],
+        "Buchungstext": text,
+        "Belegfeld 1": number,
+        "EU-Land u. UStID": eu_vat_id,
+      })
 
     if voided_at is not None:
       print("Voided", text, "Created", created, 'Voided', voided_at)
@@ -299,7 +360,7 @@ def createAccountingRecords(revenue_item):
 
   # If invoice was voided, marked uncollectible or credited fully in same month,
   # don't bother with pRAP
-  if voided_at is not None and voided_at.strftime("%Y-%m") == created.strftime("%Y-%m") or \
+  if amount_with_tax < 0 or voided_at is not None and voided_at.strftime("%Y-%m") == created.strftime("%Y-%m") or \
           marked_uncollectible_at is not None and marked_uncollectible_at.strftime("%Y-%m") == created.strftime("%Y-%m") or \
           credited_at is not None and credited_at.strftime("%Y-%m") == created.strftime("%Y-%m") and credited_amount == amount_with_tax:
     return records
@@ -322,17 +383,18 @@ def createAccountingRecords(revenue_item):
       filter(lambda month: month["start"] > created, months))
 
     if len(forward_months) > 0 and forward_amount > 0:
-      records.append({
-        "date": created,
-        "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(forward_amount),
-        "Soll/Haben-Kennzeichen": "S",
-        "WKZ Umsatz": "EUR",
-        "Konto": accounting_props["revenue_account"],
-        "Gegenkonto (ohne BU-Schlüssel)": "990",
-        "Buchungstext": "pRAP nach {} / {}".format("{}..{}".format(forward_months[0]["start"].strftime("%Y-%m"), forward_months[-1]["start"].strftime("%Y-%m")) if len(forward_months) > 1 else forward_months[0]["start"].strftime("%Y-%m"), text),
-        "Belegfeld 1": number,
-        "EU-Land u. UStID": eu_vat_id,
-      })
+      if created >= from_date:
+        records.append({
+          "date": created,
+          "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(forward_amount),
+          "Soll/Haben-Kennzeichen": "S",
+          "WKZ Umsatz": "EUR",
+          "Konto": accounting_props["revenue_account"],
+          "Gegenkonto (ohne BU-Schlüssel)": config.prap_account,
+          "Buchungstext": "pRAP nach {} / {}".format("{}..{}".format(forward_months[0]["start"].strftime("%Y-%m"), forward_months[-1]["start"].strftime("%Y-%m")) if len(forward_months) > 1 else forward_months[0]["start"].strftime("%Y-%m"), text),
+          "Belegfeld 1": number,
+          "EU-Land u. UStID": eu_vat_id,
+        })
 
       for month in forward_months:
         records.append({
@@ -341,7 +403,7 @@ def createAccountingRecords(revenue_item):
           "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(month["amounts"][0]),
           "Soll/Haben-Kennzeichen": "S",
           "WKZ Umsatz": "EUR",
-          "Konto": "990",
+          "Konto": config.prap_account,
           "Gegenkonto (ohne BU-Schlüssel)": accounting_props["revenue_account"],
           "Buchungstext": "pRAP aus {} / {}".format(created.strftime("%Y-%m"), text),
           "Belegfeld 1": number,
@@ -539,7 +601,7 @@ def accrualRecords(invoiceDate, invoiceAmount, customerAccount, revenueAccount, 
     "Soll/Haben-Kennzeichen": "S",
     "WKZ Umsatz": "EUR",
     "Konto": str(revenueAccount),
-    "Gegenkonto (ohne BU-Schlüssel)": "990",
+    "Gegenkonto (ohne BU-Schlüssel)": config.prap_account,
     "Buchungstext": accrueText,
   })
 
@@ -556,7 +618,7 @@ def accrualRecords(invoiceDate, invoiceAmount, customerAccount, revenueAccount, 
       "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(periodAmount),
       "Soll/Haben-Kennzeichen": "S",
       "WKZ Umsatz": "EUR",
-      "Konto": "990",
+      "Konto": config.prap_account,
       "Gegenkonto (ohne BU-Schlüssel)": str(revenueAccount),
       "Buchungstext": "{} / Aufloesung Rueckstellung Monat {}/{}".format(text, periodsBooked + 1, revenueSpreadMonths),
     })

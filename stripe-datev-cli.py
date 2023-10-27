@@ -3,6 +3,7 @@ import decimal
 import os
 import os.path
 import sys
+import uuid
 from datetime import datetime, timedelta, timezone
 from functools import reduce
 
@@ -19,6 +20,8 @@ import stripe_datev.output
 import stripe_datev.payouts
 import stripe_datev.recognition
 import stripe_datev.transfers
+from stripe_datev.xml import create_xml
+from stripe_datev.zip import zip_compressed_pdfs, zip_pdfs
 
 dotenv.load_dotenv()
 
@@ -66,7 +69,8 @@ class StripeDatevCli(object):
     if month > 0:
       fromTime = stripe_datev.config.accounting_tz.localize(
         datetime(year, month, 1, 0, 0, 0, 0))
-      toTime = fromTime + datedelta.MONTH
+      # toTime = fromTime + datedelta.MONTH
+      toTime = fromTime + timedelta(days=1)
     else:
       fromTime = stripe_datev.config.accounting_tz.localize(
         datetime(year, 1, 1, 0, 0, 0, 0))
@@ -81,7 +85,35 @@ class StripeDatevCli(object):
     print("Retrieved {} invoice(s), total {} EUR".format(
       len(invoices), sum([decimal.Decimal(i.total) / 100 for i in invoices])))
 
-    revenue_items = stripe_datev.invoices.createRevenueItems(invoices)
+    invoices += list(
+      reversed(list(stripe_datev.invoices.listCreditedInvoices(fromTime, toTime))))
+    print("Retrieved {} invoice(s), total {} EUR".format(
+      len(invoices), sum([decimal.Decimal(i.total) / 100 for i in invoices])))
+
+    revenue_items, credit_note_pdfs = stripe_datev.invoices.createRevenueItems(
+      invoices)
+
+    invoice_guid_dict = {}
+
+    for invoice in invoices:
+      finalized_date = datetime.fromtimestamp(
+          invoice.status_transitions.finalized_at, timezone.utc
+      ).astimezone(stripe_datev.config.accounting_tz)
+      creditNo = invoice.number
+
+      invoice_guid_dict[creditNo] = {
+        "guid": str(uuid.uuid4()),
+        "filename": "{}_{}.pdf".format(finalized_date.strftime("%Y-%m-%d"), creditNo)
+      }
+
+    for credit_note in credit_note_pdfs:
+      creditNo = credit_note["number"]
+
+      invoice_guid_dict[creditNo] = {
+        "guid": str(uuid.uuid4()),
+        "filename": "{}_{}.pdf".format(credit_note["date"].strftime("%Y-%m-%d"), creditNo),
+        "invoice_number": credit_note["invoice_number"],
+      }
 
     charges = list(stripe_datev.charges.listChargesRaw(fromTime, toTime))
     print("Retrieved {} charge(s), total {} EUR".format(
@@ -115,9 +147,12 @@ class StripeDatevCli(object):
 
     # Datev Revenue
 
+    print("datev revenue")
+
     records = []
     for revenue_item in revenue_items:
-      records += stripe_datev.invoices.createAccountingRecords(revenue_item)
+      records += stripe_datev.invoices.createAccountingRecords(
+        revenue_item, fromTime)
 
     records_by_month = {}
     for record in records:
@@ -192,13 +227,16 @@ class StripeDatevCli(object):
     if not os.path.exists(pdfDir):
       os.mkdir(pdfDir)
 
+    create_xml(pdfDir, invoice_guid_dict, year, month)
+
     for invoice in invoices:
       pdfLink = invoice.invoice_pdf
-      finalized_date = datetime.fromtimestamp(
-        invoice.status_transitions.finalized_at, timezone.utc).astimezone(stripe_datev.config.accounting_tz)
+      # finalized_date = datetime.fromtimestamp(
+      #     invoice.status_transitions.finalized_at, timezone.utc
+      # ).astimezone(stripe_datev.config.accounting_tz)
       invNo = invoice.number
 
-      fileName = "{} {}.pdf".format(finalized_date.strftime("%Y-%m-%d"), invNo)
+      fileName = invoice_guid_dict.get(invNo)["filename"]
       filePath = os.path.join(pdfDir, fileName)
       if os.path.exists(filePath):
         # print("{} exists, skipping".format(filePath))
@@ -211,6 +249,28 @@ class StripeDatevCli(object):
         continue
       with open(filePath, "wb") as fp:
         fp.write(r.content)
+
+    for credit_note in credit_note_pdfs:
+      pdfLink = credit_note.get("pdf")
+      creditNo = credit_note.get("number")
+
+      fileName = invoice_guid_dict.get(creditNo)["filename"]
+      filePath = os.path.join(pdfDir, fileName)
+      if os.path.exists(filePath):
+        # print("{} exists, skipping".format(filePath))
+        continue
+
+      print("Downloading {} to {}".format(pdfLink, filePath))
+      r = requests.get(pdfLink)
+      if r.status_code != 200:
+        print("HTTP status {}".format(r.status_code))
+        continue
+      with open(filePath, "wb") as fp:
+        fp.write(r.content)
+
+    zip_pdfs(os.path.join(out_dir, "{}_XML.zip".format(thisMonth)), pdfDir)
+    zip_compressed_pdfs(os.path.join(
+      out_dir, "{}_XML_compr.zip".format(thisMonth)), pdfDir)
 
     for charge in charges:
       fileName = "{} {}.html".format(datetime.fromtimestamp(

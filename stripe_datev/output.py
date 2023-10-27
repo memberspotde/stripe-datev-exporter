@@ -132,17 +132,17 @@ def filterRecords(records, fromTime=None, toTime=None):
   return list(filter(lambda r: (fromTime is None or r["date"] >= fromTime) and (toTime is None or r["date"] <= toTime), records))
 
 
-def writeRecords(fileName, records, fromTime=None, toTime=None, bezeichung=None):
+def writeRecords(fileName, records, invoice_guid_dict: dict = None, fromTime=None, toTime=None, bezeichung=None):
   if len(records) == 0:
     return
   with open(fileName, 'w', encoding="latin1", errors="replace", newline="\r\n") as fp:
-    printRecords(fp, records, fromTime=fromTime,
+    printRecords(fp, records, invoice_guid_dict, fromTime=fromTime,
                  toTime=toTime, bezeichung=bezeichung)
     print("Wrote {} acc. records  to {}".format(
       str(len(records)).rjust(4, " "), os.path.relpath(fp.name, os.getcwd())))
 
 
-def printRecords(textFileHandle, records, fromTime=None, toTime=None, bezeichung=None):
+def printRecords(textFileHandle, records, invoice_guid_dict: dict = None, fromTime=None, toTime=None, bezeichung=None):
   if fromTime is not None or toTime is not None:
     records = filterRecords(records, fromTime, toTime)
 
@@ -194,6 +194,20 @@ def printRecords(textFileHandle, records, fromTime=None, toTime=None, bezeichung
   for record in records:
     record["Belegdatum"] = formatDateDatev(record["date"])
     record["Buchungstext"] = "\"{}\"".format(record["Buchungstext"][:60])
+    if invoice_guid_dict is not None:
+      invoice_no = record["Belegfeld 1"]
+      invoice_guid = invoice_guid_dict[invoice_no]
+      beleg_link = invoice_guid["guid"]
+      buchungstext = record["Buchungstext"]
+
+      if (buchungstext.startswith("\"Invoice") or buchungstext.startswith("\"Storno")):
+        record["Beleglink"] = "BEDI \"{}\"".format(beleg_link)
+
+      elif (buchungstext.startswith("\"Erstattung")):
+        credit_note_no = next(key for key in invoice_guid_dict if invoice_guid_dict[key].get(
+          "invoice_number", "") == invoice_no)
+        record["Beleglink"] = "BEDI \"{}\"".format(
+          invoice_guid_dict[credit_note_no]["guid"])
 
     # print(record)
     recordValues = [record.get(f, '') for f in fields]

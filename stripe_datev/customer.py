@@ -75,6 +75,7 @@ country_codes_eu = [
   "SI",
   "ES",
   "SE",
+  "CY"
 ]
 
 
@@ -83,12 +84,15 @@ def getAccountingProps(customer, invoice=None, checkout_session=None):
     "vat_region": "World",
   }
 
-  if (invoice is None or datetime.fromtimestamp(invoice.status_transitions.finalized_at, timezone.utc) >= datetime(2022, 1, 1, 0, 0).astimezone(config.accounting_tz)):
-    if not customer.metadata.get("accountNumber", None):
-      raise Exception("Expected 'accountNumber' in metadata")
-    props["customer_account"] = customer.metadata["accountNumber"]
-  else:
-    props["customer_account"] = "10001"
+  # if invoice is None or datetime.fromtimestamp(
+  #     invoice.status_transitions.finalized_at, timezone.utc
+  # ) >= datetime(2022, 1, 1, 0, 0).astimezone(config.accounting_tz):
+  #   # if not customer.metadata.get("accountNumber", None):
+  #   #     print(customer)
+  #   #     raise Exception("Expected 'accountNumber' in metadata")
+  #   props["customer_account"] = customer.metadata["schoolId"]
+  # else:
+  props["customer_account"] = config.sammel_debitor
 
   address = customer.address or customer.shipping.address
   country = address.country
@@ -121,15 +125,15 @@ def getAccountingProps(customer, invoice=None, checkout_session=None):
       print("Warning: no tax in DE invoice", invoice["id"])
     if tax_exempt != "none":
       print("Warning: DE customer tax status is", tax_exempt, customer.id)
-    props["revenue_account"] = "8400"
-    # props["datev_tax_key"] = "9"
+    props["revenue_account"] = config.account_germany
+    props["datev_tax_key"] = config.bu_key_germany
     props["vat_region"] = "DE"
     return props
 
   if country in country_codes_eu:
     props["vat_region"] = "EU"
 
-  if tax_exempt == "reverse" or tax_exempt == "exempt" or invoice_tax is None or invoice_tax == 0:
+  if (tax_exempt == "reverse" or tax_exempt == "exempt" or invoice_tax is None or (invoice_tax == 0 and invoice.get("total") != 0)):
     if invoice is not None:
       if tax_exempt == "exempt":
         print("Warning: tax exempt customer, treating like 'reverse'", customer.id)
@@ -145,22 +149,25 @@ def getAccountingProps(customer, invoice=None, checkout_session=None):
         print("Warning: EU reverse charge customer without VAT ID", customer.id)
 
     if country in country_codes_eu and vat_id is not None:
-      props["revenue_account"] = "8336"
+      props["revenue_account"] = config.account_eu_reverse
+      props["datev_tax_key"] = config.bu_key_eu_reverse
     else:
-      props["revenue_account"] = "8338"
+      props["revenue_account"] = config.account_world
+      props["datev_tax_key"] = config.bu_key_word
 
-    props["datev_tax_key"] = "40"
     return props
 
   elif tax_exempt == "none":
     # print("Warning: configure taxation for", country, "customer", customer.id)
+    props["revenue_account"] = config.account_moss
+    props["datev_tax_key"] = config.bu_key_moss
     # Unter Bagtellgrenze MOSS
     pass
 
   else:
     print("Warning: unknown tax status for customer", customer.id)
 
-  props["revenue_account"] = "8400"
+    props["revenue_account"] = config.account_germany
   return props
 
 
