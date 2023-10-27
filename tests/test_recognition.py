@@ -1,8 +1,7 @@
-import datetime
-import decimal
-import unittest
-
 from stripe_datev import config, recognition
+import unittest
+import decimal
+import datetime
 
 
 class RecognitionTest(unittest.TestCase):

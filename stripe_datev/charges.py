@@ -1,9 +1,7 @@
+import stripe
 import decimal
 from datetime import datetime, timezone
-
-import stripe
-
-from . import config, customer, dateparser, invoices, output
+from . import customer, dateparser, output, config, invoices
 
 
 def listChargesRaw(fromTime, toTime):

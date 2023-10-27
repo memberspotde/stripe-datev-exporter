@@ -1,7 +1,6 @@
-import os
 from datetime import datetime
-
 from . import config, customer
+import os
 
 fields = [
   "Umsatz (ohne Soll/Haben-Kz)",

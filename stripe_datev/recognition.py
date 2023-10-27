@@ -1,7 +1,7 @@
+import unittest
 import calendar
 import datetime
 import decimal
-import unittest
 
 
 def split_months(start, end, amounts):

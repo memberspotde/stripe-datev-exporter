@@ -1,9 +1,6 @@
 {
   "python.pythonPath": "venv/bin/python3.7",
   "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": true
-  },
   "editor.tabSize": 2,
   "[python]": {
     "editor.defaultFormatter": "ms-python.autopep8"
