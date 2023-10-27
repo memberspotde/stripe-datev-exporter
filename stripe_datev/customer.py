@@ -125,8 +125,8 @@ def getAccountingProps(customer, invoice=None, checkout_session=None):
       print("Warning: no tax in DE invoice", invoice["id"])
     if tax_exempt != "none":
       print("Warning: DE customer tax status is", tax_exempt, customer.id)
-    props["revenue_account"] = config.account_germany
-    props["datev_tax_key"] = config.bu_key_germany
+    props["revenue_account"] = config.account_rev_germany
+    props["datev_tax_key"] = config.datev_tax_key_rev_germany
     props["vat_region"] = "DE"
     return props
 
@@ -149,25 +149,25 @@ def getAccountingProps(customer, invoice=None, checkout_session=None):
         print("Warning: EU reverse charge customer without VAT ID", customer.id)
 
     if country in country_codes_eu and vat_id is not None:
-      props["revenue_account"] = config.account_eu_reverse
-      props["datev_tax_key"] = config.bu_key_eu_reverse
+      props["revenue_account"] = config.account_rev_eu_reverse
+      props["datev_tax_key"] = config.datev_tax_key_rev_eu_reverse
     else:
-      props["revenue_account"] = config.account_world
-      props["datev_tax_key"] = config.bu_key_word
+      props["revenue_account"] = config.account_rev_world
+      props["datev_tax_key"] = config.datev_tax_key_rev_word
 
     return props
 
   elif tax_exempt == "none":
     # print("Warning: configure taxation for", country, "customer", customer.id)
-    props["revenue_account"] = config.account_moss
-    props["datev_tax_key"] = config.bu_key_moss
+    props["revenue_account"] = config.account_rev_moss
+    props["datev_tax_key"] = config.datev_tax_key_rev_moss
     # Unter Bagtellgrenze MOSS
     pass
 
   else:
     print("Warning: unknown tax status for customer", customer.id)
 
-    props["revenue_account"] = config.account_germany
+    props["revenue_account"] = config.account_rev_germany
   return props
 
 

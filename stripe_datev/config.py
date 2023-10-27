@@ -13,16 +13,16 @@ stripe_fees_account = "6855"
 stripe_transit_account = "1461"
 
 sammel_debitor = "13101"
-prap_account = "3272"
+account_prap = "3272"
 
-account_germany = "4400"
-bu_key_germany = ""
+account_rev_germany = "4400"
+datev_tax_key_rev_germany = ""
 
-account_eu_reverse = "4336"
-bu_key_eu_reverse = ""
+account_rev_eu_reverse = "4336"
+datev_tax_key_rev_eu_reverse = ""
 
-account_moss = "4331"
-bu_key_moss = "44"
+account_rev_moss = "4331"
+datev_tax_key_rev_moss = "44"
 
-account_world = "4338"
-bu_key_word = ""
+account_rev_world = "4338"
+datev_tax_key_rev_word = ""
