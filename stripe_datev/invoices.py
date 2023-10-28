@@ -21,7 +21,7 @@ def listFinalizedInvoices(fromTime, toTime):
       "gte": int(fromTime.timestamp()),
       "lt": int(toTime.timestamp())
     },
-    customer="cus_NHytio7HhdSVRq",
+    # customer="cus_NHytio7HhdSVRq",
     # due_date={
     #     "gte": int(fromTime.timestamp()),
     # },
@@ -36,23 +36,6 @@ def listFinalizedInvoices(fromTime, toTime):
     if finalized_date < fromTime or finalized_date >= toTime:
       # print("Skipping invoice {}, created {} finalized {} due {}".format(invoice.id, created_date, finalized_date, due_date))
       continue
-    invoices_cached[invoice.id] = invoice
-    yield invoice
-
-
-def listCreditedInvoices(fromTime, toTime):
-  invoices = []
-  invoice = stripe.Invoice.retrieve(
-    "in_1MYQ1wDc6Ds2E1iCLNnFkltZ",
-    # expand=["data.customer", "data.customer.tax_ids"]
-  )
-  invoices.append(invoice)
-
-  for invoice in invoices:
-    finalized_date = datetime.fromtimestamp(
-      invoice.status_transitions.finalized_at, timezone.utc).astimezone(config.accounting_tz)
-    # if finalized_date < fromTime or finalized_date >= toTime:
-    #   continue
     invoices_cached[invoice.id] = invoice
     yield invoice
 

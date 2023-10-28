@@ -9,18 +9,10 @@ from datetime import datetime, timedelta, timezone
 from . import customer, output, dateparser, config
 import datedelta
 
-# 1. Get all CreditNotes for a specific month from Stripe
-# 2. Get corsponding Invoices from Stripe
-# 3. Map creditnote pos to invoice pos to get recognition
-# 4. Use Invoice date to get regonition fore the creditnote pos
-# 5. Use creditnote pos amount
-
-invoices_cached = {}
-
 
 def list_creditnotes(from_time: datetime, to_time: datetime):
   all_creditnotes = stripe.CreditNote.list(
-    customer="cus_NHytio7HhdSVRq",
+    # customer="cus_NHytio7HhdSVRq",
   ).auto_paging_iter()
   creditnotes = []
 

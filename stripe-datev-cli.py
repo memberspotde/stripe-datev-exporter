@@ -246,48 +246,11 @@ class StripeDatevCli(object):
 
     create_xml(pdfDir, invoice_guid_dict, year, month)
 
-    asyncio.run(save_files.save_invoices(invoices, invoice_guid_dict, pdfDir))
+    asyncio.run(save_files.save_files(
+      invoices, "invoice_pdf", invoice_guid_dict, pdfDir))
+    asyncio.run(save_files.save_files(
+      creditnotes, "pdf", invoice_guid_dict, pdfDir))
 
-    # for invoice in invoices:
-    #   pdfLink = invoice.invoice_pdf
-    #   # finalized_date = datetime.fromtimestamp(
-    #   #     invoice.status_transitions.finalized_at, timezone.utc
-    #   # ).astimezone(stripe_datev.config.accounting_tz)
-    #   invNo = invoice.number
-
-    #   fileName = invoice_guid_dict.get(invNo)["filename"]
-    #   filePath = os.path.join(pdfDir, fileName)
-    #   if os.path.exists(filePath):
-    #     # print("{} exists, skipping".format(filePath))
-    #     continue
-
-    #   print("Downloading {} to {}".format(pdfLink, filePath))
-    #   r = requests.get(pdfLink)
-    #   if r.status_code != 200:
-    #     print("HTTP status {}".format(r.status_code))
-    #     continue
-    #   with open(filePath, "wb") as fp:
-    #     fp.write(r.content)
-
-    for creditnote in creditnotes:
-      pdfLink = creditnote.get("pdf")
-      creditNo = creditnote.get("number")
-
-      fileName = invoice_guid_dict.get(creditNo)["filename"]
-      filePath = os.path.join(pdfDir, fileName)
-      if os.path.exists(filePath):
-        # print("{} exists, skipping".format(filePath))
-        continue
-
-      print("Downloading {} to {}".format(pdfLink, filePath))
-      r = requests.get(pdfLink)
-      if r.status_code != 200:
-        print("HTTP status {}".format(r.status_code))
-        continue
-      with open(filePath, "wb") as fp:
-        fp.write(r.content)
-
-    # zip_pdfs(os.path.join(out_dir, "{}_XML".format(thisMonth)), pdfDir)
     zip_compressed_pdfs(os.path.join(
       out_dir, "{}_XML_compr.zip".format(thisMonth)), pdfDir, thisMonth)
 
