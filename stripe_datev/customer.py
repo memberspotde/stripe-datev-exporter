@@ -43,7 +43,7 @@ def getCustomerTaxId(customer):
     if customer.id in tax_ids_cached:
       return tax_ids_cached[customer.id]
     ids = stripe.Customer.list_tax_ids(customer.id, limit=10).data
-    tax_id = ids[0].value if len(ids) > 0 else None
+    tax_id = ids[0]["value"] if len(ids) > 0 else None
     tax_ids_cached[customer.id] = tax_id
   return tax_id
 

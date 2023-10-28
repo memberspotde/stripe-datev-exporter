@@ -1,0 +1,90 @@
+{
+  "id": "cn_1O6CHpDc6Ds2E1iCODCZP2Tf",
+  "object": "credit_note",
+  "amount": 238000,
+  "amount_shipping": 0,
+  "created": 1698498645,
+  "currency": "eur",
+  "customer": "cus_OTQ1FjXijLMcIG",
+  "customer_balance_transaction": null,
+  "discount_amount": 0,
+  "discount_amounts": [],
+  "effective_at": 1698498645,
+  "invoice": "in_1NgTBZDc6Ds2E1iCdOT6B20b",
+  "lines": {
+    "object": "list",
+    "data": [
+      {
+        "id": "cnli_1O6CHpDc6Ds2E1iCGj1pUENR",
+        "object": "credit_note_line_item",
+        "amount": 200000,
+        "amount_excluding_tax": 200000,
+        "description": "1 × Premium-V3 (at €3,830.40 / year)",
+        "discount_amount": 0,
+        "discount_amounts": [],
+        "invoice_line_item": "il_1NgTBZDc6Ds2E1iChNSGFwnr",
+        "livemode": false,
+        "quantity": null,
+        "tax_amounts": [
+          {
+            "amount": 38000,
+            "inclusive": false,
+            "tax_rate": "txr_1GWllXDc6Ds2E1iCBY2dIDXE",
+            "taxability_reason": null,
+            "taxable_amount": 200000
+          }
+        ],
+        "tax_rates": [
+          {
+            "id": "txr_1GWllXDc6Ds2E1iCBY2dIDXE",
+            "object": "tax_rate",
+            "active": true,
+            "country": null,
+            "created": 1586620867,
+            "description": null,
+            "display_name": "Umsatzsteuer",
+            "effective_percentage": null,
+            "inclusive": false,
+            "jurisdiction": null,
+            "livemode": false,
+            "metadata": {},
+            "percentage": 19.0,
+            "state": null,
+            "tax_type": null
+          }
+        ],
+        "type": "invoice_line_item",
+        "unit_amount": null,
+        "unit_amount_decimal": null,
+        "unit_amount_excluding_tax": null
+      }
+    ],
+    "has_more": false,
+    "url": "/v1/credit_notes/cn_1O6CHpDc6Ds2E1iCODCZP2Tf/lines"
+  },
+  "livemode": false,
+  "memo": null,
+  "metadata": {},
+  "number": "194C2584-3320-CN-01",
+  "out_of_band_amount": null,
+  "pdf": "pdflink",
+  "reason": null,
+  "refund": "re_3NgTBZDc6Ds2E1iC3r65QW5b",
+  "shipping_cost": null,
+  "status": "issued",
+  "subtotal": 200000,
+  "subtotal_excluding_tax": 200000,
+  "tax_amounts": [
+    {
+      "amount": 38000,
+      "inclusive": false,
+      "tax_rate": "txr_1GWllXDc6Ds2E1iCBY2dIDXE",
+      "taxability_reason": null,
+      "taxable_amount": 200000
+    }
+  ],
+  "total": 238000,
+  "total_excluding_tax": 200000,
+  "type": "post_payment",
+  "voided_at": null
+}

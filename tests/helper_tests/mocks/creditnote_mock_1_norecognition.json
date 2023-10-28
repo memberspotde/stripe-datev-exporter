@@ -1,0 +1,230 @@
+{
+  "id": "cn_1O60BRDc6Ds2E1iCIYZ2diEp",
+  "object": "credit_note",
+  "amount": 111835,
+  "amount_shipping": 0,
+  "created": 1698452121,
+  "currency": "eur",
+  "customer": "cus_OtZ2YONJpEC9r4",
+  "customer_balance_transaction": null,
+  "discount_amount": 29500,
+  "discount_amounts": [
+    {
+      "amount": 20000,
+      "discount": "di_1O5zMjDc6Ds2E1iC9SCSHtgM"
+    },
+    {
+      "amount": 9500,
+      "discount": "di_1O5zOdDc6Ds2E1iC808nFibF"
+    }
+  ],
+  "effective_at": 1698452121,
+  "invoice": "in_1O5zMIDc6Ds2E1iC5r6flpIe",
+  "lines": {
+    "object": "list",
+    "data": [
+      {
+        "id": "cnli_1O60BRDc6Ds2E1iC7TxxcQY6",
+        "object": "credit_note_line_item",
+        "amount": 100000,
+        "amount_excluding_tax": 100000,
+        "description": "Premium-V3",
+        "discount_amount": 28000,
+        "discount_amounts": [
+          {
+            "amount": 20000,
+            "discount": "di_1O5zMjDc6Ds2E1iC9SCSHtgM"
+          },
+          {
+            "amount": 8000,
+            "discount": "di_1O5zOdDc6Ds2E1iC808nFibF"
+          }
+        ],
+        "invoice_line_item": "il_1O5zMjDc6Ds2E1iCylDtr279",
+        "livemode": false,
+        "quantity": null,
+        "tax_amounts": [
+          {
+            "amount": 13680,
+            "inclusive": false,
+            "tax_rate": "txr_1GWllXDc6Ds2E1iCBY2dIDXE",
+            "taxability_reason": null,
+            "taxable_amount": 72000
+          }
+        ],
+        "tax_rates": [
+          {
+            "id": "txr_1GWllXDc6Ds2E1iCBY2dIDXE",
+            "object": "tax_rate",
+            "active": true,
+            "country": null,
+            "created": 1586620867,
+            "description": null,
+            "display_name": "Umsatzsteuer",
+            "effective_percentage": null,
+            "inclusive": false,
+            "jurisdiction": null,
+            "livemode": false,
+            "metadata": {},
+            "percentage": 19.0,
+            "state": null,
+            "tax_type": null
+          }
+        ],
+        "type": "invoice_line_item",
+        "unit_amount": null,
+        "unit_amount_decimal": null,
+        "unit_amount_excluding_tax": null
+      },
+      {
+        "id": "cnli_1O60BRDc6Ds2E1iC32F83NDK",
+        "object": "credit_note_line_item",
+        "amount": 5000,
+        "amount_excluding_tax": 5000,
+        "description": "Eigene Domain",
+        "discount_amount": 500,
+        "discount_amounts": [
+          {
+            "amount": 500,
+            "discount": "di_1O5zOdDc6Ds2E1iC808nFibF"
+          }
+        ],
+        "invoice_line_item": "il_1O5zMwDc6Ds2E1iCLkq3Z7St",
+        "livemode": false,
+        "quantity": null,
+        "tax_amounts": [
+          {
+            "amount": 855,
+            "inclusive": false,
+            "tax_rate": "txr_1GWllXDc6Ds2E1iCBY2dIDXE",
+            "taxability_reason": null,
+            "taxable_amount": 4500
+          }
+        ],
+        "tax_rates": [
+          {
+            "id": "txr_1GWllXDc6Ds2E1iCBY2dIDXE",
+            "object": "tax_rate",
+            "active": true,
+            "country": null,
+            "created": 1586620867,
+            "description": null,
+            "display_name": "Umsatzsteuer",
+            "effective_percentage": null,
+            "inclusive": false,
+            "jurisdiction": null,
+            "livemode": false,
+            "metadata": {},
+            "percentage": 19.0,
+            "state": null,
+            "tax_type": null
+          }
+        ],
+        "type": "invoice_line_item",
+        "unit_amount": null,
+        "unit_amount_decimal": null,
+        "unit_amount_excluding_tax": null
+      },
+      {
+        "id": "cnli_1O60BRDc6Ds2E1iCCKqmDmmS",
+        "object": "credit_note_line_item",
+        "amount": 10000,
+        "amount_excluding_tax": 10000,
+        "description": "AddOn API",
+        "discount_amount": 1000,
+        "discount_amounts": [
+          {
+            "amount": 1000,
+            "discount": "di_1O5zOdDc6Ds2E1iC808nFibF"
+          }
+        ],
+        "invoice_line_item": "il_1O5zQRDc6Ds2E1iCEYYefuxS",
+        "livemode": false,
+        "quantity": null,
+        "tax_amounts": [
+          {
+            "amount": 1800,
+            "inclusive": false,
+            "tax_rate": "txr_1Js241Dc6Ds2E1iCZFOn1Wik",
+            "taxability_reason": null,
+            "taxable_amount": 9000
+          }
+        ],
+        "tax_rates": [
+          {
+            "id": "txr_1Js241Dc6Ds2E1iCZFOn1Wik",
+            "object": "tax_rate",
+            "active": true,
+            "country": "BG",
+            "created": 1636017413,
+            "description": null,
+            "display_name": "Umsatzsteuer",
+            "effective_percentage": null,
+            "inclusive": false,
+            "jurisdiction": null,
+            "livemode": false,
+            "metadata": {},
+            "percentage": 20.0,
+            "state": null,
+            "tax_type": null
+          }
+        ],
+        "type": "invoice_line_item",
+        "unit_amount": null,
+        "unit_amount_decimal": null,
+        "unit_amount_excluding_tax": null
+      },
+      {
+        "id": "cnli_1O60BRDc6Ds2E1iCw202HiaZ",
+        "object": "credit_note_line_item",
+        "amount": 10000,
+        "amount_excluding_tax": 10000,
+        "description": "Sonderrabatt",
+        "discount_amount": 0,
+        "discount_amounts": [],
+        "livemode": false,
+        "quantity": 1,
+        "tax_amounts": [],
+        "tax_rates": [],
+        "type": "custom_line_item",
+        "unit_amount": 10000,
+        "unit_amount_decimal": "10000",
+        "unit_amount_excluding_tax": "10000"
+      }
+    ],
+    "has_more": false,
+    "url": "/v1/credit_notes/cn_1O60BRDc6Ds2E1iCIYZ2diEp/lines"
+  },
+  "livemode": false,
+  "memo": null,
+  "metadata": {},
+  "number": "194C2584-3343-CN-01",
+  "out_of_band_amount": null,
+  "pdf": "pdflink",
+  "reason": null,
+  "refund": null,
+  "shipping_cost": null,
+  "status": "issued",
+  "subtotal": 105000,
+  "subtotal_excluding_tax": 105000,
+  "tax_amounts": [
+    {
+      "amount": 14535,
+      "inclusive": false,
+      "tax_rate": "txr_1GWllXDc6Ds2E1iCBY2dIDXE",
+      "taxability_reason": null,
+      "taxable_amount": 76500
+    },
+    {
+      "amount": 1800,
+      "inclusive": false,
+      "tax_rate": "txr_1Js241Dc6Ds2E1iCZFOn1Wik",
+      "taxability_reason": null,
+      "taxable_amount": 9000
+    }
+  ],
+  "total": 111835,
+  "total_excluding_tax": 95500,
+  "type": "pre_payment",
+  "voided_at": null
+}

@@ -1,0 +1,407 @@
+{
+  "id": "in_1O5zMIDc6Ds2E1iC5r6flpIe",
+  "object": "invoice",
+  "account_country": "DE",
+  "account_name": "Memberspot GmbH",
+  "account_tax_ids": ["atxi_1HZyfaDc6Ds2E1iCwoDJa0Km"],
+  "amount_due": 91835,
+  "amount_paid": 0,
+  "amount_remaining": 91835,
+  "amount_shipping": 0,
+  "application": null,
+  "application_fee_amount": null,
+  "attempt_count": 0,
+  "attempted": false,
+  "auto_advance": true,
+  "automatic_tax": {
+    "enabled": false,
+    "status": null
+  },
+  "billing_reason": "manual",
+  "charge": null,
+  "collection_method": "send_invoice",
+  "created": 1698448950,
+  "currency": "eur",
+  "custom_fields": null,
+  "customer": "cus_OtZ2YONJpEC9r4",
+  "customer_address": null,
+  "customer_email": "test@memberspot.de",
+  "customer_name": "test",
+  "customer_phone": null,
+  "customer_shipping": null,
+  "customer_tax_exempt": "none",
+  "customer_tax_ids": [],
+  "default_payment_method": null,
+  "default_source": null,
+  "default_tax_rates": [
+    {
+      "id": "txr_1GWllXDc6Ds2E1iCBY2dIDXE",
+      "object": "tax_rate",
+      "active": true,
+      "country": null,
+      "created": 1586620867,
+      "description": null,
+      "display_name": "Umsatzsteuer",
+      "effective_percentage": null,
+      "inclusive": false,
+      "jurisdiction": null,
+      "livemode": false,
+      "metadata": {},
+      "percentage": 19.0,
+      "state": null,
+      "tax_type": null
+    }
+  ],
+  "description": null,
+  "discount": {
+    "id": "di_1O5zOdDc6Ds2E1iC808nFibF",
+    "object": "discount",
+    "checkout_session": null,
+    "coupon": {
+      "id": "Xjkms7e9",
+      "object": "coupon",
+      "amount_off": null,
+      "created": 1698449086,
+      "currency": null,
+      "duration": "forever",
+      "duration_in_months": null,
+      "livemode": false,
+      "max_redemptions": null,
+      "metadata": {},
+      "name": "10% Rabatt",
+      "percent_off": 10.0,
+      "redeem_by": null,
+      "times_redeemed": 1,
+      "valid": true
+    },
+    "customer": "cus_OtZ2YONJpEC9r4",
+    "end": null,
+    "invoice": "in_1O5zMIDc6Ds2E1iC5r6flpIe",
+    "invoice_item": null,
+    "promotion_code": null,
+    "start": 1698449095,
+    "subscription": null
+  },
+  "discounts": ["di_1O5zOdDc6Ds2E1iC808nFibF"],
+  "due_date": 1699053750,
+  "effective_at": 1698449232,
+  "ending_balance": 0,
+  "footer": null,
+  "from_invoice": null,
+  "hosted_invoice_url": "url",
+  "invoice_pdf": "pdflink",
+  "last_finalization_error": null,
+  "latest_revision": null,
+  "lines": {
+    "object": "list",
+    "data": [
+      {
+        "id": "il_1O5zQRDc6Ds2E1iCEYYefuxS",
+        "object": "line_item",
+        "amount": 20000,
+        "amount_excluding_tax": 20000,
+        "currency": "eur",
+        "description": "AddOn API",
+        "discount_amounts": [
+          {
+            "amount": 2000,
+            "discount": "di_1O5zOdDc6Ds2E1iC808nFibF"
+          }
+        ],
+        "discountable": true,
+        "discounts": [],
+        "invoice_item": "ii_1O5zQRDc6Ds2E1iCcV2qhtdI",
+        "livemode": false,
+        "metadata": {},
+        "period": {
+          "end": 1698449207,
+          "start": 1698449207
+        },
+        "plan": null,
+        "price": {
+          "id": "price_1O5zQQDc6Ds2E1iCeKOWXnL3",
+          "object": "price",
+          "active": true,
+          "billing_scheme": "per_unit",
+          "created": 1698449206,
+          "currency": "eur",
+          "custom_unit_amount": null,
+          "livemode": false,
+          "lookup_key": null,
+          "metadata": {},
+          "nickname": null,
+          "product": "prod_OI8LYyvbVpW7io",
+          "recurring": null,
+          "tax_behavior": "unspecified",
+          "tiers_mode": null,
+          "transform_quantity": null,
+          "type": "one_time",
+          "unit_amount": 20000,
+          "unit_amount_decimal": "20000"
+        },
+        "proration": false,
+        "proration_details": {
+          "credited_items": null
+        },
+        "quantity": 1,
+        "subscription": null,
+        "tax_amounts": [
+          {
+            "amount": 3600,
+            "inclusive": false,
+            "tax_rate": "txr_1Js241Dc6Ds2E1iCZFOn1Wik",
+            "taxability_reason": null,
+            "taxable_amount": 18000
+          }
+        ],
+        "tax_rates": [
+          {
+            "id": "txr_1Js241Dc6Ds2E1iCZFOn1Wik",
+            "object": "tax_rate",
+            "active": true,
+            "country": "BG",
+            "created": 1636017413,
+            "description": null,
+            "display_name": "Umsatzsteuer",
+            "effective_percentage": null,
+            "inclusive": false,
+            "jurisdiction": null,
+            "livemode": false,
+            "metadata": {},
+            "percentage": 20.0,
+            "state": null,
+            "tax_type": null
+          }
+        ],
+        "type": "invoiceitem",
+        "unit_amount_excluding_tax": "20000"
+      },
+      {
+        "id": "il_1O5zMwDc6Ds2E1iCLkq3Z7St",
+        "object": "line_item",
+        "amount": 10000,
+        "amount_excluding_tax": 10000,
+        "currency": "eur",
+        "description": "Eigene Domain",
+        "discount_amounts": [
+          {
+            "amount": 1000,
+            "discount": "di_1O5zOdDc6Ds2E1iC808nFibF"
+          }
+        ],
+        "discountable": true,
+        "discounts": [],
+        "invoice_item": "ii_1O5zMwDc6Ds2E1iCbjL47U7x",
+        "livemode": false,
+        "metadata": {},
+        "period": {
+          "end": 1698448990,
+          "start": 1698448990
+        },
+        "plan": null,
+        "price": {
+          "id": "price_1O5zMvDc6Ds2E1iCtOQfIoMS",
+          "object": "price",
+          "active": true,
+          "billing_scheme": "per_unit",
+          "created": 1698448989,
+          "currency": "eur",
+          "custom_unit_amount": null,
+          "livemode": false,
+          "lookup_key": null,
+          "metadata": {},
+          "nickname": null,
+          "product": "prod_HJWTTyDcpL4XLt",
+          "recurring": null,
+          "tax_behavior": "unspecified",
+          "tiers_mode": null,
+          "transform_quantity": null,
+          "type": "one_time",
+          "unit_amount": 10000,
+          "unit_amount_decimal": "10000"
+        },
+        "proration": false,
+        "proration_details": {
+          "credited_items": null
+        },
+        "quantity": 1,
+        "subscription": null,
+        "tax_amounts": [
+          {
+            "amount": 1710,
+            "inclusive": false,
+            "tax_rate": "txr_1GWllXDc6Ds2E1iCBY2dIDXE",
+            "taxability_reason": null,
+            "taxable_amount": 9000
+          }
+        ],
+        "tax_rates": [],
+        "type": "invoiceitem",
+        "unit_amount_excluding_tax": "10000"
+      },
+      {
+        "id": "il_1O5zMjDc6Ds2E1iCylDtr279",
+        "object": "line_item",
+        "amount": 200000,
+        "amount_excluding_tax": 200000,
+        "currency": "eur",
+        "description": "Premium-V3",
+        "discount_amounts": [
+          {
+            "amount": 40000,
+            "discount": "di_1O5zMjDc6Ds2E1iC9SCSHtgM"
+          },
+          {
+            "amount": 16000,
+            "discount": "di_1O5zOdDc6Ds2E1iC808nFibF"
+          }
+        ],
+        "discountable": true,
+        "discounts": ["di_1O5zMjDc6Ds2E1iC9SCSHtgM"],
+        "invoice_item": "ii_1O5zMjDc6Ds2E1iCpBEB79ow",
+        "livemode": false,
+        "metadata": {},
+        "period": {
+          "end": 1698448977,
+          "start": 1698448977
+        },
+        "plan": null,
+        "price": {
+          "id": "price_1O5qMLDc6Ds2E1iCaQ6kQcYc",
+          "object": "price",
+          "active": true,
+          "billing_scheme": "per_unit",
+          "created": 1698414357,
+          "currency": "eur",
+          "custom_unit_amount": null,
+          "livemode": false,
+          "lookup_key": null,
+          "metadata": {},
+          "nickname": null,
+          "product": "prod_OPGzg63nRzSI2z",
+          "recurring": null,
+          "tax_behavior": "unspecified",
+          "tiers_mode": null,
+          "transform_quantity": null,
+          "type": "one_time",
+          "unit_amount": 200000,
+          "unit_amount_decimal": "200000"
+        },
+        "proration": false,
+        "proration_details": {
+          "credited_items": null
+        },
+        "quantity": 1,
+        "subscription": null,
+        "tax_amounts": [
+          {
+            "amount": 27360,
+            "inclusive": false,
+            "tax_rate": "txr_1GWllXDc6Ds2E1iCBY2dIDXE",
+            "taxability_reason": null,
+            "taxable_amount": 144000
+          }
+        ],
+        "tax_rates": [
+          {
+            "id": "txr_1GWllXDc6Ds2E1iCBY2dIDXE",
+            "object": "tax_rate",
+            "active": true,
+            "country": null,
+            "created": 1586620867,
+            "description": null,
+            "display_name": "Umsatzsteuer",
+            "effective_percentage": null,
+            "inclusive": false,
+            "jurisdiction": null,
+            "livemode": false,
+            "metadata": {},
+            "percentage": 19.0,
+            "state": null,
+            "tax_type": null
+          }
+        ],
+        "type": "invoiceitem",
+        "unit_amount_excluding_tax": "200000"
+      }
+    ],
+    "has_more": false,
+    "total_count": 3,
+    "url": "/v1/invoices/in_1O5zMIDc6Ds2E1iC5r6flpIe/lines"
+  },
+  "livemode": false,
+  "metadata": {},
+  "next_payment_attempt": null,
+  "number": "194C2584-3343",
+  "on_behalf_of": null,
+  "paid": false,
+  "paid_out_of_band": false,
+  "payment_intent": "pi_3O5zQqDc6Ds2E1iC1SY6uWiu",
+  "payment_settings": {
+    "default_mandate": null,
+    "payment_method_options": null,
+    "payment_method_types": null
+  },
+  "period_end": 1698448950,
+  "period_start": 1698448950,
+  "post_payment_credit_notes_amount": 0,
+  "pre_payment_credit_notes_amount": 111835,
+  "quote": null,
+  "receipt_number": null,
+  "rendering": {
+    "amount_tax_display": null,
+    "pdf": {
+      "page_size": "letter"
+    }
+  },
+  "rendering_options": null,
+  "shipping_cost": null,
+  "shipping_details": null,
+  "starting_balance": 0,
+  "statement_descriptor": null,
+  "status": "open",
+  "status_transitions": {
+    "finalized_at": 1698449232,
+    "marked_uncollectible_at": null,
+    "paid_at": null,
+    "voided_at": null
+  },
+  "subscription": null,
+  "subscription_details": {
+    "metadata": null
+  },
+  "subtotal": 190000,
+  "subtotal_excluding_tax": 190000,
+  "tax": 32670,
+  "test_clock": null,
+  "total": 203670,
+  "total_discount_amounts": [
+    {
+      "amount": 19000,
+      "discount": "di_1O5zOdDc6Ds2E1iC808nFibF"
+    },
+    {
+      "amount": 40000,
+      "discount": "di_1O5zMjDc6Ds2E1iC9SCSHtgM"
+    }
+  ],
+  "total_excluding_tax": 171000,
+  "total_tax_amounts": [
+    {
+      "amount": 3600,
+      "inclusive": false,
+      "tax_rate": "txr_1Js241Dc6Ds2E1iCZFOn1Wik",
+      "taxability_reason": null,
+      "taxable_amount": 18000
+    },
+    {
+      "amount": 29070,
+      "inclusive": false,
+      "tax_rate": "txr_1GWllXDc6Ds2E1iCBY2dIDXE",
+      "taxability_reason": null,
+      "taxable_amount": 153000
+    }
+  ],
+  "transfer_data": null,
+  "webhooks_delivered_at": 1698448951
+}

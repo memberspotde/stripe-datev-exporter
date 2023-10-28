@@ -1,0 +1,66 @@
+{
+  "id": "cus_xyz",
+  "object": "customer",
+  "address": {
+    "city": "asd",
+    "country": "DE",
+    "line1": "Dorfstr. 37",
+    "line2": "",
+    "postal_code": "12345",
+    "state": null
+  },
+  "balance": 0,
+  "created": 1674479525,
+  "currency": "eur",
+  "default_currency": "eur",
+  "default_source": null,
+  "delinquent": false,
+  "description": null,
+  "discount": {
+    "id": "di_1MWF7nDc6Ds2E1iCqUdN87Ez",
+    "object": "discount",
+    "checkout_session": null,
+    "coupon": {
+      "id": "ms10",
+      "object": "coupon",
+      "amount_off": null,
+      "created": 1607550441,
+      "currency": null,
+      "duration": "repeating",
+      "duration_in_months": 12,
+      "livemode": true,
+      "max_redemptions": null,
+      "metadata": {},
+      "name": "Search ms10 Code",
+      "percent_off": 10.0,
+      "redeem_by": null,
+      "times_redeemed": 433,
+      "valid": true
+    },
+    "customer": "cus_xyz",
+    "end": 1706689411,
+    "invoice": null,
+    "invoice_item": null,
+    "promotion_code": null,
+    "start": 1675153411,
+    "subscription": null
+  },
+  "email": "customer@mail.de",
+  "invoice_prefix": "75EB8CA9",
+  "invoice_settings": {
+    "custom_fields": null,
+    "default_payment_method": "pm_1MWF63Dc6Ds2E1iCQ6KlpN7I",
+    "footer": null,
+    "rendering_options": null
+  },
+  "livemode": true,
+  "metadata": {
+    "schoolId": "ItOJ0OJuAeg2ChyiGvCM"
+  },
+  "name": "Firma GmbH",
+  "phone": null,
+  "preferred_locales": [],
+  "shipping": null,
+  "tax_exempt": "none",
+  "test_clock": null
+}

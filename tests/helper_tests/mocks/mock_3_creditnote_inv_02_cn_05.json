@@ -1,0 +1,100 @@
+{
+  "id": "cn_1NApJgDc6Ds2E1iCpwuUWAhg",
+  "object": "credit_note",
+  "amount": 91506,
+  "amount_shipping": 0,
+  "created": 1684825652,
+  "currency": "eur",
+  "customer": "cus_xyz",
+  "customer_balance_transaction": null,
+  "discount_amount": 8544,
+  "discount_amounts": [
+    {
+      "amount": 8544,
+      "discount": "di_1MWF7nDc6Ds2E1iCqUdN87Ez"
+    }
+  ],
+  "effective_at": 1684825652,
+  "invoice": "in_1MYQ1wDc6Ds2E1iCLNnFkltZ",
+  "lines": {
+    "object": "list",
+    "data": [
+      {
+        "id": "cnli_1NApJgDc6Ds2E1iCugQsSfHP",
+        "object": "credit_note_line_item",
+        "amount": 85440,
+        "amount_excluding_tax": 85440,
+        "description": "1 × XY (at €854.40 / year)",
+        "discount_amount": 8544,
+        "discount_amounts": [
+          {
+            "amount": 8544,
+            "discount": "di_1MWF7nDc6Ds2E1iCqUdN87Ez"
+          }
+        ],
+        "invoice_line_item": "il_1MYQ1wDc6Ds2E1iCPPWgBy2w",
+        "livemode": true,
+        "quantity": 1,
+        "tax_amounts": [
+          {
+            "amount": 14610,
+            "inclusive": false,
+            "tax_rate": "txr_1GXvlUDc6Ds2E1iCpqvEVQq7",
+            "taxability_reason": null,
+            "taxable_amount": 76896
+          }
+        ],
+        "tax_rates": [
+          {
+            "id": "txr_1GXvlUDc6Ds2E1iCpqvEVQq7",
+            "object": "tax_rate",
+            "active": true,
+            "country": "DE",
+            "created": 1586897632,
+            "description": null,
+            "display_name": "Umsatzsteuer",
+            "effective_percentage": null,
+            "inclusive": false,
+            "jurisdiction": "Umsatzsteuer Deutschland",
+            "livemode": true,
+            "metadata": {},
+            "percentage": 19.0,
+            "state": null,
+            "tax_type": null
+          }
+        ],
+        "type": "invoice_line_item",
+        "unit_amount": 85440,
+        "unit_amount_decimal": "85440",
+        "unit_amount_excluding_tax": "85440"
+      }
+    ],
+    "has_more": false,
+    "url": "/v1/credit_notes/cn_1NApJgDc6Ds2E1iCpwuUWAhg/lines"
+  },
+  "livemode": true,
+  "memo": null,
+  "metadata": {},
+  "number": "194C2584-17795-CN-01",
+  "out_of_band_amount": 91506,
+  "pdf": "pdflink",
+  "reason": null,
+  "refund": null,
+  "shipping_cost": null,
+  "status": "issued",
+  "subtotal": 85440,
+  "subtotal_excluding_tax": 85440,
+  "tax_amounts": [
+    {
+      "amount": 14610,
+      "inclusive": false,
+      "tax_rate": "txr_1GXvlUDc6Ds2E1iCpqvEVQq7",
+      "taxability_reason": null,
+      "taxable_amount": 76896
+    }
+  ],
+  "total": 91506,
+  "total_excluding_tax": 76896,
+  "type": "post_payment",
+  "voided_at": null
+}

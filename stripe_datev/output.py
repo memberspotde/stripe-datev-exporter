@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from . import config, customer
 import os
 
@@ -195,11 +196,11 @@ def printRecords(textFileHandle, records, invoice_guid_dict: dict = None, fromTi
     record["Buchungstext"] = "\"{}\"".format(record["Buchungstext"][:60])
     if invoice_guid_dict is not None:
       invoice_no = record["Belegfeld 1"]
-      invoice_guid = invoice_guid_dict[invoice_no]
-      beleg_link = invoice_guid["guid"]
       buchungstext = record["Buchungstext"]
 
       if (buchungstext.startswith("\"Invoice") or buchungstext.startswith("\"Storno")):
+        invoice_guid = invoice_guid_dict[invoice_no]
+        beleg_link = invoice_guid["guid"]
         record["Beleglink"] = "BEDI \"{}\"".format(beleg_link)
 
       elif (buchungstext.startswith("\"Erstattung")):

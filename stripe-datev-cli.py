@@ -1,11 +1,15 @@
+import asyncio
 import decimal
 from functools import reduce
 import sys
 import argparse
 from datetime import datetime, timedelta, timezone
+import uuid
 import datedelta
 import stripe
+from stripe_datev import save_files
 import stripe_datev.invoices
+import stripe_datev.creditnotes
 import \
   stripe_datev.charges, \
   stripe_datev.customer, \
@@ -18,6 +22,7 @@ import os
 import os.path
 import requests
 import dotenv
+from stripe_datev.utils.print import print_json
 
 from stripe_datev.xml import create_xml
 from stripe_datev.zip import zip_compressed_pdfs, zip_pdfs
@@ -70,7 +75,7 @@ class StripeDatevCli(object):
       fromTime = stripe_datev.config.accounting_tz.localize(
         datetime(year, month, 1, 0, 0, 0, 0))
       # toTime = fromTime + datedelta.MONTH
-      toTime = fromTime + timedelta(days=1)
+      toTime = fromTime + timedelta(days=8)
     else:
       fromTime = stripe_datev.config.accounting_tz.localize(
         datetime(year, 1, 1, 0, 0, 0, 0))
@@ -85,13 +90,16 @@ class StripeDatevCli(object):
     print("Retrieved {} invoice(s), total {} EUR".format(
       len(invoices), sum([decimal.Decimal(i.total) / 100 for i in invoices])))
 
-    invoices += list(
-      reversed(list(stripe_datev.invoices.listCreditedInvoices(fromTime, toTime))))
-    print("Retrieved {} invoice(s), total {} EUR".format(
-      len(invoices), sum([decimal.Decimal(i.total) / 100 for i in invoices])))
-
-    revenue_items, credit_note_pdfs = stripe_datev.invoices.createRevenueItems(
+    revenue_items = stripe_datev.invoices.createRevenueItems(
       invoices)
+
+    creditnotes = list(
+      reversed(list(stripe_datev.creditnotes.list_creditnotes(fromTime, toTime) or [])))
+    print("Retrieved {} creditnote(s), total {} EUR".format(
+      len(creditnotes), sum([decimal.Decimal(i.total) / 100 for i in creditnotes])))
+
+    creditnote_revenue_items = stripe_datev.creditnotes.create_revenue_item_creditnote(
+      creditnotes)
 
     invoice_guid_dict = {}
 
@@ -106,13 +114,18 @@ class StripeDatevCli(object):
         "filename": "{}_{}.pdf".format(finalized_date.strftime("%Y-%m-%d"), creditNo)
       }
 
-    for credit_note in credit_note_pdfs:
-      creditNo = credit_note["number"]
+    for creditnote in creditnotes:
+      finalized_date = datetime.fromtimestamp(
+          creditnote.created, timezone.utc
+      ).astimezone(stripe_datev.config.accounting_tz)
+      creditNo = creditnote["number"]
 
       invoice_guid_dict[creditNo] = {
         "guid": str(uuid.uuid4()),
-        "filename": "{}_{}.pdf".format(credit_note["date"].strftime("%Y-%m-%d"), creditNo),
-        "invoice_number": credit_note["invoice_number"],
+        "filename": "{}_{}.pdf".format(finalized_date.strftime("%Y-%m-%d"), creditNo),
+        "invoice_number": next(
+          rev["number"] for rev in creditnote_revenue_items if rev["id"] == creditnote["id"]
+        )
       }
 
     charges = list(stripe_datev.charges.listChargesRaw(fromTime, toTime))
@@ -152,7 +165,11 @@ class StripeDatevCli(object):
     records = []
     for revenue_item in revenue_items:
       records += stripe_datev.invoices.createAccountingRecords(
-        revenue_item, fromTime)
+        revenue_item)
+
+    for creditnote_rev_item in creditnote_revenue_items:
+      records += stripe_datev.creditnotes.create_creditnote_accounting_records(
+        creditnote_rev_item)
 
     records_by_month = {}
     for record in records:
@@ -165,24 +182,24 @@ class StripeDatevCli(object):
       else:
         name = "EXTF_{}_Revenue_From_{}.csv".format(month, thisMonth)
       stripe_datev.output.writeRecords(os.path.join(
-        datevDir, name), records, bezeichung="Stripe Revenue {} from {}".format(month, thisMonth))
+        datevDir, name), records, invoice_guid_dict, bezeichung="Stripe Revenue {} from {}".format(month, thisMonth))
 
     # Datev charges
 
-    charge_records = stripe_datev.charges.createAccountingRecords(charges)
+    # charge_records = stripe_datev.charges.createAccountingRecords(charges)
 
-    charges_by_month = {}
-    for record in charge_records:
-      month = record["date"].strftime("%Y-%m")
-      charges_by_month[month] = charges_by_month.get(month, []) + [record]
+    # charges_by_month = {}
+    # for record in charge_records:
+    #   month = record["date"].strftime("%Y-%m")
+    #   charges_by_month[month] = charges_by_month.get(month, []) + [record]
 
-    for month, records in charges_by_month.items():
-      if month == thisMonth:
-        name = "EXTF_{}_Charges.csv".format(thisMonth)
-      else:
-        name = "EXTF_{}_Charges_From_{}.csv".format(month, thisMonth)
-      stripe_datev.output.writeRecords(os.path.join(
-        datevDir, name), records, bezeichung="Stripe Charges/Fees {} from {}".format(month, thisMonth))
+    # for month, records in charges_by_month.items():
+    #   if month == thisMonth:
+    #     name = "EXTF_{}_Charges.csv".format(thisMonth)
+    #   else:
+    #     name = "EXTF_{}_Charges_From_{}.csv".format(month, thisMonth)
+    #   stripe_datev.output.writeRecords(os.path.join(
+    #     datevDir, name), records, bezeichung="Stripe Charges/Fees {} from {}".format(month, thisMonth))
 
     # Datev transfers
 
@@ -229,30 +246,32 @@ class StripeDatevCli(object):
 
     create_xml(pdfDir, invoice_guid_dict, year, month)
 
-    for invoice in invoices:
-      pdfLink = invoice.invoice_pdf
-      # finalized_date = datetime.fromtimestamp(
-      #     invoice.status_transitions.finalized_at, timezone.utc
-      # ).astimezone(stripe_datev.config.accounting_tz)
-      invNo = invoice.number
+    asyncio.run(save_files.save_invoices(invoices, invoice_guid_dict, pdfDir))
 
-      fileName = invoice_guid_dict.get(invNo)["filename"]
-      filePath = os.path.join(pdfDir, fileName)
-      if os.path.exists(filePath):
-        # print("{} exists, skipping".format(filePath))
-        continue
+    # for invoice in invoices:
+    #   pdfLink = invoice.invoice_pdf
+    #   # finalized_date = datetime.fromtimestamp(
+    #   #     invoice.status_transitions.finalized_at, timezone.utc
+    #   # ).astimezone(stripe_datev.config.accounting_tz)
+    #   invNo = invoice.number
 
-      print("Downloading {} to {}".format(pdfLink, filePath))
-      r = requests.get(pdfLink)
-      if r.status_code != 200:
-        print("HTTP status {}".format(r.status_code))
-        continue
-      with open(filePath, "wb") as fp:
-        fp.write(r.content)
+    #   fileName = invoice_guid_dict.get(invNo)["filename"]
+    #   filePath = os.path.join(pdfDir, fileName)
+    #   if os.path.exists(filePath):
+    #     # print("{} exists, skipping".format(filePath))
+    #     continue
 
-    for credit_note in credit_note_pdfs:
-      pdfLink = credit_note.get("pdf")
-      creditNo = credit_note.get("number")
+    #   print("Downloading {} to {}".format(pdfLink, filePath))
+    #   r = requests.get(pdfLink)
+    #   if r.status_code != 200:
+    #     print("HTTP status {}".format(r.status_code))
+    #     continue
+    #   with open(filePath, "wb") as fp:
+    #     fp.write(r.content)
+
+    for creditnote in creditnotes:
+      pdfLink = creditnote.get("pdf")
+      creditNo = creditnote.get("number")
 
       fileName = invoice_guid_dict.get(creditNo)["filename"]
       filePath = os.path.join(pdfDir, fileName)
@@ -268,26 +287,26 @@ class StripeDatevCli(object):
       with open(filePath, "wb") as fp:
         fp.write(r.content)
 
-    zip_pdfs(os.path.join(out_dir, "{}_XML.zip".format(thisMonth)), pdfDir)
+    # zip_pdfs(os.path.join(out_dir, "{}_XML".format(thisMonth)), pdfDir)
     zip_compressed_pdfs(os.path.join(
-      out_dir, "{}_XML_compr.zip".format(thisMonth)), pdfDir)
+      out_dir, "{}_XML_compr.zip".format(thisMonth)), pdfDir, thisMonth)
 
-    for charge in charges:
-      fileName = "{} {}.html".format(datetime.fromtimestamp(
-        charge.created, timezone.utc).strftime("%Y-%m-%d"), charge.receipt_number or charge.id)
-      filePath = os.path.join(pdfDir, fileName)
-      if os.path.exists(filePath):
-        # print("{} exists, skipping".format(filePath))
-        continue
+    # for charge in charges:
+    #   fileName = "{} {}.html".format(datetime.fromtimestamp(
+    #     charge.created, timezone.utc).strftime("%Y-%m-%d"), charge.receipt_number or charge.id)
+    #   filePath = os.path.join(pdfDir, fileName)
+    #   if os.path.exists(filePath):
+    #     # print("{} exists, skipping".format(filePath))
+    #     continue
 
-      pdfLink = charge["receipt_url"]
-      print("Downloading {} to {}".format(pdfLink, filePath))
-      r = requests.get(pdfLink)
-      if r.status_code != 200:
-        print("HTTP status {}".format(r.status_code))
-        continue
-      with open(filePath, "wb") as fp:
-        fp.write(r.content)
+    #   pdfLink = charge["receipt_url"]
+    #   print("Downloading {} to {}".format(pdfLink, filePath))
+    #   r = requests.get(pdfLink)
+    #   if r.status_code != 200:
+    #     print("HTTP status {}".format(r.status_code))
+    #     continue
+    #   with open(filePath, "wb") as fp:
+    #     fp.write(r.content)
 
   def validate_customers(self, argv):
     stripe_datev.customer.validate_customers()

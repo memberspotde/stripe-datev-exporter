@@ -1,0 +1,263 @@
+{
+  "id": "in_1MYQ1wDc6Ds2E1iCLNnFkltZ",
+  "object": "invoice",
+  "account_country": "DE",
+  "account_name": "Memberspot GmbH",
+  "account_tax_ids": ["atxi_1HZydaDc6Ds2E1iC09wSYpOF"],
+  "amount_due": 91506,
+  "amount_paid": 91506,
+  "amount_remaining": 0,
+  "amount_shipping": 0,
+  "application": null,
+  "application_fee_amount": null,
+  "attempt_count": 1,
+  "attempted": true,
+  "auto_advance": false,
+  "automatic_tax": {
+    "enabled": false,
+    "status": null
+  },
+  "billing_reason": "subscription_cycle",
+  "charge": "ch_3MYQyIDc6Ds2E1iC1gwzBJZh",
+  "collection_method": "charge_automatically",
+  "created": 1675671988,
+  "currency": "eur",
+  "custom_fields": null,
+  "customer": "cus_xyz",
+  "customer_address": {
+    "city": "Kirchlinteln",
+    "country": "DE",
+    "line1": "Weitzmühlener Dorfstr. 37",
+    "line2": "",
+    "postal_code": "27308",
+    "state": null
+  },
+  "customer_email": "customer@mail.de",
+  "customer_name": "Firma GmbH",
+  "customer_phone": null,
+  "customer_shipping": null,
+  "customer_tax_exempt": "none",
+  "customer_tax_ids": [
+    {
+      "type": "eu_vat",
+      "value": "DE269793925"
+    }
+  ],
+  "default_payment_method": null,
+  "default_source": null,
+  "default_tax_rates": [
+    {
+      "id": "txr_1GXvlUDc6Ds2E1iCpqvEVQq7",
+      "object": "tax_rate",
+      "active": true,
+      "country": "DE",
+      "created": 1586897632,
+      "description": null,
+      "display_name": "Umsatzsteuer",
+      "effective_percentage": null,
+      "inclusive": false,
+      "jurisdiction": "Umsatzsteuer Deutschland",
+      "livemode": true,
+      "metadata": {},
+      "percentage": 19.0,
+      "state": null,
+      "tax_type": null
+    }
+  ],
+  "description": null,
+  "discount": {
+    "id": "di_1MWF7nDc6Ds2E1iCqUdN87Ez",
+    "object": "discount",
+    "checkout_session": null,
+    "coupon": {
+      "id": "ms10",
+      "object": "coupon",
+      "amount_off": null,
+      "created": 1607550441,
+      "currency": null,
+      "duration": "repeating",
+      "duration_in_months": 12,
+      "livemode": true,
+      "max_redemptions": null,
+      "metadata": {},
+      "name": "Search ms10 Code",
+      "percent_off": 10.0,
+      "redeem_by": null,
+      "times_redeemed": 433,
+      "valid": true
+    },
+    "customer": "cus_xyz",
+    "end": 1706689411,
+    "invoice": null,
+    "invoice_item": null,
+    "promotion_code": null,
+    "start": 1675153411,
+    "subscription": null
+  },
+  "discounts": ["di_1MWF7nDc6Ds2E1iCqUdN87Ez"],
+  "due_date": null,
+  "effective_at": 1675675605,
+  "ending_balance": 0,
+  "footer": null,
+  "from_invoice": null,
+  "hosted_invoice_url": "url",
+  "invoice_pdf": "pdflink",
+  "last_finalization_error": null,
+  "latest_revision": null,
+  "lines": {
+    "object": "list",
+    "data": [
+      {
+        "id": "il_1MYQ1wDc6Ds2E1iCPPWgBy2w",
+        "object": "line_item",
+        "amount": 85440,
+        "amount_excluding_tax": 85440,
+        "currency": "eur",
+        "description": "1 × Memberspot Pro (at €854.40 / year)",
+        "discount_amounts": [
+          {
+            "amount": 8544,
+            "discount": "di_1MWF7nDc6Ds2E1iCqUdN87Ez"
+          }
+        ],
+        "discountable": true,
+        "discounts": [],
+        "livemode": true,
+        "metadata": {},
+        "period": {
+          "end": 1707207892,
+          "start": 1675671892
+        },
+        "plan": {
+          "id": "plan_HDx0cqmPjuylsu",
+          "object": "plan",
+          "active": true,
+          "aggregate_usage": null,
+          "amount": 85440,
+          "amount_decimal": "85440",
+          "billing_scheme": "per_unit",
+          "created": 1588701746,
+          "currency": "eur",
+          "interval": "year",
+          "interval_count": 1,
+          "livemode": true,
+          "metadata": {},
+          "nickname": "Pro - jährl.",
+          "product": "prod_H69OsyxQxlJyIL",
+          "tiers_mode": null,
+          "transform_usage": null,
+          "trial_period_days": 14,
+          "usage_type": "licensed"
+        },
+        "price": {
+          "id": "plan_HDx0cqmPjuylsu",
+          "object": "price",
+          "active": true,
+          "billing_scheme": "per_unit",
+          "created": 1588701746,
+          "currency": "eur",
+          "custom_unit_amount": null,
+          "livemode": true,
+          "lookup_key": null,
+          "metadata": {},
+          "nickname": "Pro - jährl.",
+          "product": "prod_H69OsyxQxlJyIL",
+          "recurring": {
+            "aggregate_usage": null,
+            "interval": "year",
+            "interval_count": 1,
+            "trial_period_days": 14,
+            "usage_type": "licensed"
+          },
+          "tax_behavior": "unspecified",
+          "tiers_mode": null,
+          "transform_quantity": null,
+          "type": "recurring",
+          "unit_amount": 85440,
+          "unit_amount_decimal": "85440"
+        },
+        "proration": false,
+        "proration_details": {
+          "credited_items": null
+        },
+        "quantity": 1,
+        "subscription": "sub_1MWF96Dc6Ds2E1iCAwnmxjWD",
+        "subscription_item": "si_NGmidz9sevFr9O",
+        "tax_amounts": [
+          {
+            "amount": 14610,
+            "inclusive": false,
+            "tax_rate": "txr_1GXvlUDc6Ds2E1iCpqvEVQq7",
+            "taxability_reason": null,
+            "taxable_amount": 76896
+          }
+        ],
+        "tax_rates": [],
+        "type": "subscription",
+        "unit_amount_excluding_tax": "85440"
+      }
+    ],
+    "has_more": false,
+    "total_count": 1,
+    "url": "/v1/invoices/in_1MYQ1wDc6Ds2E1iCLNnFkltZ/lines"
+  },
+  "livemode": true,
+  "metadata": {},
+  "next_payment_attempt": null,
+  "number": "194C2584-17795",
+  "on_behalf_of": null,
+  "paid": true,
+  "paid_out_of_band": false,
+  "payment_intent": "pi_3MYQyIDc6Ds2E1iC1NyOvgPE",
+  "payment_settings": {
+    "default_mandate": null,
+    "payment_method_options": null,
+    "payment_method_types": null
+  },
+  "period_end": 1675671892,
+  "period_start": 1675153492,
+  "post_payment_credit_notes_amount": 91506,
+  "pre_payment_credit_notes_amount": 0,
+  "quote": null,
+  "receipt_number": "2426-5044",
+  "rendering": null,
+  "rendering_options": null,
+  "shipping_cost": null,
+  "shipping_details": null,
+  "starting_balance": 0,
+  "statement_descriptor": null,
+  "status": "paid",
+  "status_transitions": {
+    "finalized_at": 1675675605,
+    "marked_uncollectible_at": null,
+    "paid_at": 1675675605,
+    "voided_at": null
+  },
+  "subscription": "sub_1MWF96Dc6Ds2E1iCAwnmxjWD",
+  "subscription_details": {
+    "metadata": null
+  },
+  "subtotal": 85440,
+  "subtotal_excluding_tax": 85440,
+  "tax": 14610,
+  "test_clock": null,
+  "total": 91506,
+  "total_discount_amounts": [
+    {
+      "amount": 8544,
+      "discount": "di_1MWF7nDc6Ds2E1iCqUdN87Ez"
+    }
+  ],
+  "total_excluding_tax": 76896,
+  "total_tax_amounts": [
+    {
+      "amount": 14610,
+      "inclusive": false,
+      "tax_rate": "txr_1GXvlUDc6Ds2E1iCpqvEVQq7",
+      "taxability_reason": null,
+      "taxable_amount": 76896
+    }
+  ],
+  "transfer_data": null,
+  "webhooks_delivered_at": 1675671989
+}

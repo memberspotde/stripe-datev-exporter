@@ -1,0 +1,22 @@
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "txi_1MWF5FDc6Ds2E1iCd5AAG1sM",
+      "object": "tax_id",
+      "country": "DE",
+      "created": 1675153253,
+      "customer": "cus_xyz",
+      "livemode": true,
+      "type": "eu_vat",
+      "value": "DE269793925",
+      "verification": {
+        "status": "verified",
+        "verified_address": null,
+        "verified_name": null
+      }
+    }
+  ],
+  "has_more": false,
+  "url": "/v1/customers/cus_xyz/tax_ids"
+}
