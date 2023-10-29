@@ -13,7 +13,7 @@ import datedelta
 invoices_cached = {}
 
 
-def listFinalizedInvoices(fromTime, toTime):
+def listFinalizedInvoices(fromTime, toTime, customer=None):
   # return []
 
   invoices = stripe.Invoice.list(
@@ -21,7 +21,7 @@ def listFinalizedInvoices(fromTime, toTime):
       "gte": int(fromTime.timestamp()),
       "lt": int(toTime.timestamp())
     },
-    # customer="cus_NHytio7HhdSVRq",
+    customer=customer,
     # due_date={
     #     "gte": int(fromTime.timestamp()),
     # },

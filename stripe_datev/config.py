@@ -1,16 +1,16 @@
 import pytz
 
-# accounting_tz = pytz.timezone('Europe/Berlin')
-accounting_tz = pytz.timezone('UTC')
+accounting_tz = pytz.timezone('Europe/Berlin')
+# accounting_tz = pytz.timezone('UTC')
 
 book_0_invoices = True
 
 berater_nr = 33300
 mandenten_nr = 22179
 
-bank_account = "1802"
-stripe_fees_account = "6855"
 stripe_transit_account = "1461"
+stripe_fees_account = "6855"
+bank_account = "1802"
 
 sammel_debitor = "13101"
 account_prap = "3272"

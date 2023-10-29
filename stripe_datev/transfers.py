@@ -49,7 +49,7 @@ def createAccountingRecords(transfers):
       "Soll/Haben-Kennzeichen": "S",
       "WKZ Umsatz": "EUR",
       "Konto": transfer["destination"]["metadata"]["accountNumber"],
-      "Gegenkonto (ohne BU-Schlüssel)": config.bank_account,
+      "Gegenkonto (ohne BU-Schlüssel)": config.stripe_transit_account,
       "Buchungstext": "Fremdleistung {} anteilig".format(invoiceNumber or transfer.id),
       "Belegfeld 1": transfer.id,
     })

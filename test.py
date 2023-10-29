@@ -1,15 +1,12 @@
 
 
-class Abc():
+list1 = {"a": 1, "b": 2, "c": 3}
+list2 = list1
+list3 = {**list1}
 
-  def __init__(self):
-    self.a = 1
-    self.b = 2
+# list2["d"] = 4
 
-  def add(self):
-    return self.a + self.b
-
-
-abc = Abc()
-
-print("A", abc.a, abc["a"])
+print(list1)
+print(list2)
+print(list3)
+print(list1 == list3)

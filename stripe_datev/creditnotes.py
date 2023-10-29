@@ -10,9 +10,9 @@ from . import customer, output, dateparser, config
 import datedelta
 
 
-def list_creditnotes(from_time: datetime, to_time: datetime):
+def list_creditnotes(from_time: datetime, to_time: datetime, customer=None):
   all_creditnotes = stripe.CreditNote.list(
-    # customer="cus_NHytio7HhdSVRq",
+    customer=customer,
   ).auto_paging_iter()
   creditnotes = []
 
