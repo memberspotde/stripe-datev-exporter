@@ -118,6 +118,7 @@ def getAccountingProps(customer, invoice=None, checkout_session=None):
     "tax_exempt": tax_exempt,
     "invoice_tax": invoice_tax,
     "datev_tax_key": "",
+    "prap_datev_tax_key": config.prap_datev_tax_key
   })
 
   if country == "DE":

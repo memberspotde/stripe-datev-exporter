@@ -1,7 +1,7 @@
 import datetime
 import shutil
 import os.path
-from zipfile import ZipFile
+from zipfile import ZipFile, ZIP_DEFLATED
 
 
 def zip_pdfs(outfile: str, path: str):
@@ -11,7 +11,7 @@ def zip_pdfs(outfile: str, path: str):
 
 def zip_compressed_pdfs(outfile: str, path: str, month: str):
   print("Zip files", month)
-  with ZipFile(outfile, 'w') as zip_object:
+  with ZipFile(outfile, 'w', ZIP_DEFLATED) as zip_object:
     # Traverse all files in directory
     for folder_name, sub_folders, file_names in os.walk(path):
       for filename in file_names:

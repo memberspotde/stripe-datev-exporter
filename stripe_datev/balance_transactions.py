@@ -14,6 +14,9 @@ def list_dispute_chargebacks(fromTime: datetime, toTime: datetime, customer=None
     expand=["data.source", "data.source.charge"],
   ).auto_paging_iter()
   for trans in disputes:
+    if trans.source == None and trans.reporting_category == "other_adjustment":
+      print(trans)
+      continue
     charge = trans.source if trans.source.object == "charge" else trans.source.charge
     if customer is not None and charge.customer != customer:
       continue
@@ -132,9 +135,6 @@ def create_accounting_records(balance_trans: list):
     })
 
     fee_amount = decimal.Decimal(trans.fee) / 100
-    # if (len(trans.fee_details) == 0):
-    #   print("zero fee details trans", trans.id)
-    # print(type(trans.fee_details), len(trans.fee_details), trans.id)
     if fee_amount != decimal.Decimal(0):
       fee_desc = trans.fee_details[0].description
       records.append({
@@ -144,6 +144,7 @@ def create_accounting_records(balance_trans: list):
         "WKZ Umsatz": "EUR",
         "Konto": config.stripe_fees_account,
         "Gegenkonto (ohne BU-Schlüssel)": config.stripe_transit_account,
+        "BU-Schlüssel": config.stripe_fees_datev_tax_key,
         "Buchungstext": "{} ({})".format(fee_desc or "Stripe Fee", trans.id),
       })
 

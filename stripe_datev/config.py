@@ -8,12 +8,14 @@ book_0_invoices = True
 berater_nr = 33300
 mandenten_nr = 22179
 
-stripe_transit_account = "1461"
+stripe_transit_account = "1802"
 stripe_fees_account = "6855"
-bank_account = "1802"
+bank_account = "1461"
+stripe_fees_datev_tax_key = "506"
 
 sammel_debitor = "13101"
 account_prap = "3272"
+prap_datev_tax_key = "400"
 
 account_rev_germany = "4400"
 datev_tax_key_rev_germany = ""

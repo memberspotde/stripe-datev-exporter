@@ -1,12 +1,8 @@
 
 
-list1 = {"a": 1, "b": 2, "c": 3}
-list2 = list1
-list3 = {**list1}
+import decimal
 
-# list2["d"] = 4
 
-print(list1)
-print(list2)
-print(list3)
-print(list1 == list3)
+a = decimal.Decimal(-1.5)
+
+print(a == -1.5)

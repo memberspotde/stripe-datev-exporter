@@ -1,5 +1,5 @@
 import json
-from stripe_datev import recognition, csv
+from stripe_datev import csv_export, recognition
 import stripe
 import decimal
 import math
@@ -248,18 +248,18 @@ def createAccountingRecords(revenue_item):
     return records
 
   for line_item in line_items:
-    amount_with_tax = line_item["amount_with_tax"]
+    amount_net = line_item["amount_net"]
     recognition_start = line_item["recognition_start"]
     recognition_end = line_item["recognition_end"]
     text = line_item["text"]
 
     months = recognition.split_months(
-      recognition_start, recognition_end, [amount_with_tax])
+      recognition_start, recognition_end, [amount_net])
 
     base_months = list(filter(lambda month: month["start"] <= created, months))
     base_amount = sum(map(lambda month: month["amounts"][0], base_months))
 
-    forward_amount = amount_with_tax - base_amount
+    forward_amount = amount_net - base_amount
 
     forward_months = list(
       filter(lambda month: month["start"] > created, months))
@@ -272,7 +272,7 @@ def createAccountingRecords(revenue_item):
         "WKZ Umsatz": "EUR",
         "Konto": accounting_props["revenue_account"],
         "Gegenkonto (ohne BU-Schlüssel)": config.account_prap,
-        "BU-Schlüssel": accounting_props["datev_tax_key"],
+        "BU-Schlüssel": accounting_props["prap_datev_tax_key"],
         "Buchungstext": "pRAP nach {} / {}".format("{}..{}".format(forward_months[0]["start"].strftime("%Y-%m"), forward_months[-1]["start"].strftime("%Y-%m")) if len(forward_months) > 1 else forward_months[0]["start"].strftime("%Y-%m"), text),
         "Belegfeld 1": number,
         "EU-Land u. UStID": eu_vat_id,
@@ -287,7 +287,7 @@ def createAccountingRecords(revenue_item):
           "WKZ Umsatz": "EUR",
           "Konto": config.account_prap,
           "Gegenkonto (ohne BU-Schlüssel)": accounting_props["revenue_account"],
-          "BU-Schlüssel": accounting_props["datev_tax_key"],
+          "BU-Schlüssel": accounting_props["prap_datev_tax_key"],
           "Buchungstext": "pRAP aus {} / {}".format(created.strftime("%Y-%m"), text),
           "Belegfeld 1": number,
           "EU-Land u. UStID": eu_vat_id,
@@ -354,7 +354,7 @@ def to_csv(inv):
       props["datev_tax_key"],
     ])
 
-  return csv.lines_to_csv(lines)
+  return csv_export.lines_to_csv(lines)
 
 
 def to_recognized_month_csv2(revenue_items):
@@ -443,7 +443,7 @@ def to_recognized_month_csv2(revenue_items):
                             month["end"] else month["start"]).strftime("%Y-%m-%d")
           lines.append(reverse)
 
-  return csv.lines_to_csv(lines)
+  return csv_export.lines_to_csv(lines)
 
 
 def roundCentsDown(dec):
