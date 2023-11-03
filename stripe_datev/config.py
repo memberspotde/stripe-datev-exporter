@@ -15,7 +15,7 @@ stripe_fees_datev_tax_key = "506"
 
 sammel_debitor = "13101"
 account_prap = "3272"
-prap_datev_tax_key = "400"
+prap_datev_tax_key = "40"
 
 account_rev_germany = "4400"
 datev_tax_key_rev_germany = ""

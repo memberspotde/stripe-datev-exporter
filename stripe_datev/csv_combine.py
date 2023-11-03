@@ -2,37 +2,49 @@ import pandas as pd
 import os
 from collections import defaultdict
 
-# replace with your folder's path
-folder_path = r'/Users/benny/angular/stripe-datev-exporter/out/datev'
 
-all_files = os.listdir(folder_path)
+def combine_revenue_extf_csvs(out_path: str, out_dir_dl: str, month: str):
 
-# Filter out non-CSV files
-csv_files = [f for f in all_files if f.endswith('.csv')]
+  file_names = []
+  csv_files = []
 
-# Create a list to hold the dataframes
-df_list = []
+  for root, dirs, files in os.walk(out_path, topdown=False):
+    for name in files:
+      if name.startswith(f"EXTF_{month}_Revenue") and name.endswith(".csv"):
+        # print('file', name)
+        # print('file', os.path.join(root, name))
+        file_names.append(name)
+        csv_files.append(os.path.join(root, name))
 
-for csv in csv_files:
-  file_path = os.path.join(folder_path, csv)
-  try:
-    # Try reading the file using default UTF-8 encoding
-    df = pd.read_csv(file_path)
-    df_list.append(df)
-  except UnicodeDecodeError:
-    try:
-      # If UTF-8 fails, try reading the file using UTF-16 encoding with tab separator
-      df = pd.read_csv(file_path, sep=';', encoding="latin1",
-                       skiprows=1, dtype=object)
-      df_list.append(df)
-    except Exception as e:
-      print(f"Could not read file {csv} because of error: {e}")
-  except Exception as e:
-    print(f"Could not read file {csv} because of error: {e}")
+  if len(file_names) != len(set(file_names)):
+    print("duplicate files found")
 
-# Concatenate all data into one DataFrame
-big_df = pd.concat(df_list, ignore_index=True)
+  lines = ""
+  first = True
 
-# Save the final result to a new CSV file
-big_df.to_csv(os.path.join(folder_path, 'combined_file.csv'),
-              index=False, encoding="latin1", sep=';')
+  for csv in csv_files:
+    with open(csv, 'r', encoding="latin1") as f:
+
+      if first:
+        lines += f.readline()
+        lines += f.readline()
+        first = False
+      else:
+        next(f)
+        next(f)
+
+      for line in f:
+        lines += line
+
+  print("combine following csv into one")
+  for f in file_names:
+    print(f"- {f}")
+  output_path = os.path.join(out_dir_dl, f"EXTF_{month}_combined.csv")
+  with open(output_path, 'w', encoding="latin1", errors="replace", newline="\r\n") as fp:
+    fp.write(lines)
+
+
+# combine_revenue_extf_csvs(r"/Users/benny/angular/stripe-datev-exporter/out",
+#                           r"/Users/benny/angular/stripe-datev-exporter/out/2023-10",
+#                           "2023-10"
+#                           )

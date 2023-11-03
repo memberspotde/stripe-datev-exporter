@@ -1,8 +1,5 @@
 
 
-import decimal
+ab = {"A": "2", "B": "4", "C": "6", "D": "8"}
 
-
-a = decimal.Decimal(-1.5)
-
-print(a == -1.5)
+print(list(ab.keys()))

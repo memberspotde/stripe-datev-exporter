@@ -41,5 +41,6 @@ pids
 
 .DS_Store
 out/*
+out_old/*
 
 upload*.sh

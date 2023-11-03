@@ -15,7 +15,6 @@ def list_dispute_chargebacks(fromTime: datetime, toTime: datetime, customer=None
   ).auto_paging_iter()
   for trans in disputes:
     if trans.source == None and trans.reporting_category == "other_adjustment":
-      print(trans)
       continue
     charge = trans.source if trans.source.object == "charge" else trans.source.charge
     if customer is not None and charge.customer != customer:

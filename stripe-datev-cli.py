@@ -8,6 +8,8 @@ import uuid
 import datedelta
 import stripe
 from stripe_datev import save_files
+from stripe_datev.csv_combine import combine_revenue_extf_csvs
+from stripe_datev.helpers.processing import chunker
 import stripe_datev.invoices
 import stripe_datev.creditnotes
 import stripe_datev.balance_transactions
@@ -22,12 +24,11 @@ import \
 
 import os
 import os.path
-import requests
 import dotenv
 from stripe_datev.utils.print import print_json
 
 from stripe_datev.xml import create_xml
-from stripe_datev.zip import zip_compressed_pdfs, zip_pdfs
+from stripe_datev.zip import zip_compressed_pdfs
 
 
 dotenv.load_dotenv()
@@ -92,6 +93,10 @@ class StripeDatevCli(object):
       "%Y-%m-%d"), (toTime - timedelta(0, 1)).strftime("%Y-%m-%d")))
     thisMonth = fromTime.astimezone(
       stripe_datev.config.accounting_tz).strftime("%Y-%m")
+
+    out_dir_dl = os.path.join(out_dir, thisMonth)
+    if not os.path.exists(out_dir_dl):
+      os.mkdir(out_dir_dl)
 
     invoices = list(
       reversed(list(stripe_datev.invoices.listFinalizedInvoices(fromTime, toTime, customer))))
@@ -173,7 +178,7 @@ class StripeDatevCli(object):
 
     # Write Files
 
-    overview_dir = os.path.join(out_dir, "overview")
+    overview_dir = os.path.join(out_dir_dl, "overview")
     if not os.path.exists(overview_dir):
       os.mkdir(overview_dir)
 
@@ -182,7 +187,7 @@ class StripeDatevCli(object):
       print("Wrote {} invoices      to {}".format(
         str(len(invoices)).rjust(4, " "), os.path.relpath(fp.name, os.getcwd())))
 
-    monthly_recognition_dir = os.path.join(out_dir, "monthly_recognition")
+    monthly_recognition_dir = os.path.join(out_dir_dl, "monthly_recognition")
     if not os.path.exists(monthly_recognition_dir):
       os.mkdir(monthly_recognition_dir)
 
@@ -191,7 +196,7 @@ class StripeDatevCli(object):
       print("Wrote {} revenue items to {}".format(
         str(len(revenue_items)).rjust(4, " "), os.path.relpath(fp.name, os.getcwd())))
 
-    datevDir = os.path.join(out_dir, 'datev')
+    datevDir = os.path.join(out_dir_dl, 'datev')
     if not os.path.exists(datevDir):
       os.mkdir(datevDir)
 
@@ -218,6 +223,8 @@ class StripeDatevCli(object):
         name = "EXTF_{}_Revenue_From_{}.csv".format(month, thisMonth)
       stripe_datev.output.writeRecords(os.path.join(
         datevDir, name), records, invoice_guid_dict, bezeichung="Stripe Revenue {} from {}".format(month, thisMonth))
+
+    combine_revenue_extf_csvs(out_dir, out_dir_dl, thisMonth)
 
     # Datev balance transactions
 
@@ -303,19 +310,21 @@ class StripeDatevCli(object):
 
     # PDF
 
-    pdfDir = os.path.join(out_dir, 'pdf')
+    pdfDir = os.path.join(out_dir_dl, 'pdf')
     if not os.path.exists(pdfDir):
       os.mkdir(pdfDir)
-
-    create_xml(pdfDir, invoice_guid_dict, year, month)
 
     asyncio.run(save_files.save_files(
       invoices, "invoice_pdf", invoice_guid_dict, pdfDir))
     asyncio.run(save_files.save_files(
       creditnotes, "pdf", invoice_guid_dict, pdfDir))
 
-    zip_compressed_pdfs(os.path.join(
-      out_dir, "{}_XML_compr.zip".format(thisMonth)), pdfDir, thisMonth)
+    keys = list(invoice_guid_dict.keys())
+    for i, work_set in enumerate(chunker(keys, 500)):
+      print(work_set)
+      create_xml(pdfDir, work_set, i, invoice_guid_dict, year, month)
+      zip_compressed_pdfs(os.path.join(out_dir_dl, f"{thisMonth}_XML_compr_{i}.zip"),
+                          pdfDir, i, work_set, thisMonth)
 
     # for charge in charges:
     #   fileName = "{} {}.html".format(datetime.fromtimestamp(
