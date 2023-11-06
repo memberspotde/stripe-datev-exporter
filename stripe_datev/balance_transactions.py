@@ -145,6 +145,7 @@ def create_accounting_records(balance_trans: list):
         "Gegenkonto (ohne BU-Schlüssel)": config.stripe_transit_account,
         "BU-Schlüssel": config.stripe_fees_datev_tax_key,
         "Buchungstext": "{} ({})".format(fee_desc or "Stripe Fee", trans.id),
+        "Belegfeld 1": number,
       })
 
   return records

@@ -5,7 +5,7 @@ import decimal
 import math
 from datetime import datetime, timedelta, timezone
 
-from stripe_datev.helpers.invoicehelpers import get_revenue_line_item
+from stripe_datev.helpers.invoicehelpers import get_revenue_line_item, op_switcher
 from stripe_datev.utils.print import print_json
 from . import customer, output, dateparser, config
 import datedelta
@@ -183,8 +183,8 @@ def createAccountingRecords(revenue_item):
   if amount_with_tax != 0:
     records.append({
       "date": created,
-      "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(amount_with_tax),
-      "Soll/Haben-Kennzeichen": "S",
+      "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(abs(amount_with_tax)),
+      "Soll/Haben-Kennzeichen": op_switcher("S", amount_with_tax),
       "WKZ Umsatz": "EUR",
       "Konto": accounting_props["customer_account"],
       "Gegenkonto (ohne BU-Schlüssel)": accounting_props["revenue_account"],
@@ -198,8 +198,8 @@ def createAccountingRecords(revenue_item):
       print("Voided", text, "Created", created, 'Voided', voided_at)
       records.append({
         "date": voided_at,
-        "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(amount_with_tax),
-        "Soll/Haben-Kennzeichen": "H",
+        "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(abs(amount_with_tax)),
+        "Soll/Haben-Kennzeichen": op_switcher("H", amount_with_tax),
         "WKZ Umsatz": "EUR",
         "Konto": accounting_props["customer_account"],
         "Gegenkonto (ohne BU-Schlüssel)": accounting_props["revenue_account"],
@@ -267,8 +267,8 @@ def createAccountingRecords(revenue_item):
     if len(forward_months) > 0 and forward_amount != 0:
       records.append({
         "date": created,
-        "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(forward_amount),
-        "Soll/Haben-Kennzeichen": "S",
+        "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(abs(forward_amount)),
+        "Soll/Haben-Kennzeichen": op_switcher("S", forward_amount),
         "WKZ Umsatz": "EUR",
         "Konto": accounting_props["revenue_account"],
         "Gegenkonto (ohne BU-Schlüssel)": config.account_prap,
@@ -282,8 +282,8 @@ def createAccountingRecords(revenue_item):
         records.append({
           # If invoice was voided/etc., resolve all pRAP in that month, don't keep going into the future
           "date": voided_at or marked_uncollectible_at or credited_at or month["start"],
-          "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(month["amounts"][0]),
-          "Soll/Haben-Kennzeichen": "S",
+          "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(abs(month["amounts"][0])),
+          "Soll/Haben-Kennzeichen": op_switcher("S", month["amounts"][0]),
           "WKZ Umsatz": "EUR",
           "Konto": config.account_prap,
           "Gegenkonto (ohne BU-Schlüssel)": accounting_props["revenue_account"],

@@ -213,16 +213,17 @@ class StripeDatevCli(object):
 
     records_by_month = {}
     for record in records:
-      month = record["date"].strftime("%Y-%m")
-      records_by_month[month] = records_by_month.get(month, []) + [record]
+      rev_month = record["date"].strftime("%Y-%m")
+      records_by_month[rev_month] = records_by_month.get(
+        rev_month, []) + [record]
 
-    for month, records in records_by_month.items():
-      if month == thisMonth:
+    for rev_month, records in records_by_month.items():
+      if rev_month == thisMonth:
         name = "EXTF_{}_Revenue.csv".format(thisMonth)
       else:
-        name = "EXTF_{}_Revenue_From_{}.csv".format(month, thisMonth)
+        name = "EXTF_{}_Revenue_From_{}.csv".format(rev_month, thisMonth)
       stripe_datev.output.writeRecords(os.path.join(
-        datevDir, name), records, invoice_guid_dict, bezeichung="Stripe Revenue {} from {}".format(month, thisMonth))
+        datevDir, name), records, invoice_guid_dict, bezeichung="Stripe Revenue {} from {}".format(rev_month, thisMonth))
 
     combine_revenue_extf_csvs(out_dir, out_dir_dl, thisMonth)
 
@@ -241,18 +242,18 @@ class StripeDatevCli(object):
 
     balance_trans_by_month = {}
     for record in balance_trans_records:
-      month = record["date"].strftime("%Y-%m")
-      balance_trans_by_month[month] = balance_trans_by_month.get(
-        month, []) + [record]
+      trans_month = record["date"].strftime("%Y-%m")
+      balance_trans_by_month[trans_month] = balance_trans_by_month.get(
+        trans_month, []) + [record]
 
-    for month, records in balance_trans_by_month.items():
-      if month == thisMonth:
+    for trans_month, records in balance_trans_by_month.items():
+      if trans_month == thisMonth:
         name = "EXTF_{}_Balance_Transactions.csv".format(thisMonth)
       else:
         name = "EXTF_{}_Balance_Transactions_From_{}.csv".format(
-          month, thisMonth)
+          trans_month, thisMonth)
       stripe_datev.output.writeRecords(os.path.join(
-        datevDir, name), records, bezeichung="Stripe Charges/Fees {} from {}".format(month, thisMonth))
+        datevDir, name), records, bezeichung="Stripe Charges/Fees {} from {}".format(trans_month, thisMonth))
 
     # Datev charges
 

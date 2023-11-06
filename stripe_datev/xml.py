@@ -6,13 +6,13 @@ import xml.etree.ElementTree as ET
 def create_xml(pdfDir: str, work_keys: list, run: int, invoice_guid_dict: dict = None, year=None, month=None):
 
   root = ET.Element('archive', xmlns="http://xml.datev.de/bedi/tps/document/v05.0",
-                    version="5.0", generatingSystem="custom")
+                    version="5.0", generatingSystem="memberspot")
   root.attrib["xmlns:xsi"] = "http://www.w3.org/2001/XMLSchema-instance"
   root.attrib["xsi:schemaLocation"] = "http://xml.datev.de/bedi/tps/document/v05.0 Document_v050.xsd"
 
   header = ET.SubElement(root, 'header')
   date = ET.SubElement(header, 'date')
-  date.text = datetime.now().strftime("%Y-%m-%d")
+  date.text = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
   content = ET.SubElement(root, 'content')
 
@@ -31,7 +31,8 @@ def create_xml(pdfDir: str, work_keys: list, run: int, invoice_guid_dict: dict =
     extension.attrib["name"] = inv["filename"]
 
     repository = ET.SubElement(document, 'repository')
-    ET.SubElement(repository, 'level', id="1", name="custom - Stripe Billing")
+    ET.SubElement(repository, 'level', id="1",
+                  name="Memberspot - Stripe Billing")
     ET.SubElement(repository, 'level', id="2", name="Belege")
     ET.SubElement(repository, 'level', id="3",
                   name="{}/{}".format(year, month))

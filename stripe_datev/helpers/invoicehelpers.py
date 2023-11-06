@@ -8,6 +8,15 @@ import stripe
 from stripe_datev import config, dateparser
 
 
+def op_switcher(op: str, amount: decimal.Decimal):
+  if (op != "S" and op != "H"):
+    raise Exception("Invalid OP")
+  if op == "S":
+    return "S" if amount >= 0 else "H"
+  if op == "H":
+    return "H" if amount >= 0 else "S"
+
+
 def get_invoice_recognition_range(invoice: stripe.Invoice):
   if invoice.lines.has_more or any(len(li.get("discounts", [])) > 0 for li in invoice.lines):
     lines = invoice.lines.list(expand=["data.discounts"]).auto_paging_iter()

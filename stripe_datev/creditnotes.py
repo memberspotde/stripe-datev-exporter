@@ -1,6 +1,6 @@
 import json
 
-from stripe_datev.helpers.invoicehelpers import get_creditnote_revenue_line_item, get_invoice_recognition_range, get_line_item_recognition_range, get_revenue_line_item
+from stripe_datev.helpers.invoicehelpers import get_creditnote_revenue_line_item, get_invoice_recognition_range, get_line_item_recognition_range, get_revenue_line_item, op_switcher
 from stripe_datev import csv_export, recognition
 import stripe
 import decimal
@@ -110,8 +110,8 @@ def create_creditnote_accounting_records(revenue_item):
     if len(forward_months) > 0 and forward_amount != 0:
       records.append({
         "date": created,
-        "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(forward_amount),
-        "Soll/Haben-Kennzeichen": "H",
+        "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(abs(forward_amount)),
+        "Soll/Haben-Kennzeichen": op_switcher("H", forward_amount),
         "WKZ Umsatz": "EUR",
         "Konto": accounting_props["revenue_account"],
         "Gegenkonto (ohne BU-Schlüssel)": config.account_prap,
@@ -124,8 +124,8 @@ def create_creditnote_accounting_records(revenue_item):
     for month in forward_months:
       records.append({
         "date": month["start"],
-        "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(month["amounts"][0]),
-        "Soll/Haben-Kennzeichen": "H",
+        "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(abs(month["amounts"][0])),
+        "Soll/Haben-Kennzeichen": op_switcher("H", month["amounts"][0]),
         "WKZ Umsatz": "EUR",
         "Konto": config.account_prap,
         "Gegenkonto (ohne BU-Schlüssel)": accounting_props["revenue_account"],
