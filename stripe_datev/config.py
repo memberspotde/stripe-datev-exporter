@@ -1,7 +1,7 @@
 import pytz
 
-accounting_tz = pytz.timezone('Europe/Berlin')
-# accounting_tz = pytz.timezone('UTC')
+# accounting_tz = pytz.timezone('Europe/Berlin')
+accounting_tz = pytz.timezone('UTC')
 
 book_0_invoices = True
 

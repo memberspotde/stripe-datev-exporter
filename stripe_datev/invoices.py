@@ -31,11 +31,11 @@ def listFinalizedInvoices(fromTime, toTime, customer=None):
   for invoice in invoices:
     if invoice.status == "draft":
       continue
-    finalized_date = datetime.fromtimestamp(
-      invoice.status_transitions.finalized_at, timezone.utc).astimezone(config.accounting_tz)
-    if finalized_date < fromTime or finalized_date >= toTime:
-      # print("Skipping invoice {}, created {} finalized {} due {}".format(invoice.id, created_date, finalized_date, due_date))
-      continue
+    # finalized_date = datetime.fromtimestamp(
+    #   invoice.status_transitions.finalized_at, timezone.utc).astimezone(config.accounting_tz)
+    # if finalized_date < fromTime or finalized_date >= toTime:
+    #   # print("Skipping invoice {}, created {} finalized {} due {}".format(invoice.id, created_date, finalized_date, due_date))
+    #   continue
     invoices_cached[invoice.id] = invoice
     yield invoice
 

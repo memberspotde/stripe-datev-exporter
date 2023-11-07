@@ -51,8 +51,8 @@ def get_invoice_recognition_range(invoice: stripe.Invoice):
         pass
 
     if start is None and end is None:
-      print("Warning: unknown period for line item --",
-            invoice.id, line_item.get("description"))
+      # print("Warning: unknown period for line item --",
+      #       invoice.id, line_item.get("description"))
       start = created
       end = created
 
@@ -83,8 +83,8 @@ def get_line_item_recognition_range(line_item, invoice):
       pass
 
   if start is None and end is None:
-    print("Warning: unknown period for line item --",
-          invoice["id"], line_item.get("description"))
+    # print("Warning: unknown period for line item --",
+    #       invoice["id"], line_item.get("description"))
     start = created
     end = created
 

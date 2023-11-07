@@ -322,7 +322,6 @@ class StripeDatevCli(object):
 
     keys = list(invoice_guid_dict.keys())
     for i, work_set in enumerate(chunker(keys, 500)):
-      print(work_set)
       create_xml(pdfDir, work_set, i, invoice_guid_dict, year, month)
       zip_compressed_pdfs(os.path.join(out_dir_dl, f"{thisMonth}_XML_compr_{i}.zip"),
                           pdfDir, i, work_set, thisMonth)
