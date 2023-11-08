@@ -241,7 +241,7 @@ def createAccountingRecords(revenue_item):
       })
 
   # If invoice was voided, marked uncollectible or credited fully in same month,
-  # don't bother with pRAP
+  # don't bother with PRAP
   if voided_at is not None and voided_at.strftime("%Y-%m") == created.strftime("%Y-%m") or \
           marked_uncollectible_at is not None and marked_uncollectible_at.strftime("%Y-%m") == created.strftime("%Y-%m") or \
           credited_at is not None and credited_at.strftime("%Y-%m") == created.strftime("%Y-%m") and credited_amount == amount_with_tax:
@@ -273,14 +273,14 @@ def createAccountingRecords(revenue_item):
         "Konto": accounting_props["revenue_account"],
         "Gegenkonto (ohne BU-Schlüssel)": config.account_prap,
         "BU-Schlüssel": accounting_props["prap_datev_tax_key"],
-        "Buchungstext": "pRAP nach {} / {}".format("{}..{}".format(forward_months[0]["start"].strftime("%Y-%m"), forward_months[-1]["start"].strftime("%Y-%m")) if len(forward_months) > 1 else forward_months[0]["start"].strftime("%Y-%m"), text),
+        "Buchungstext": "PRAP nach {} / {}".format("{}..{}".format(forward_months[0]["start"].strftime("%Y-%m"), forward_months[-1]["start"].strftime("%Y-%m")) if len(forward_months) > 1 else forward_months[0]["start"].strftime("%Y-%m"), text),
         "Belegfeld 1": number,
         "EU-Land u. UStID": eu_vat_id,
       })
 
       for month in forward_months:
         records.append({
-          # If invoice was voided/etc., resolve all pRAP in that month, don't keep going into the future
+          # If invoice was voided/etc., resolve all PRAP in that month, don't keep going into the future
           "date": voided_at or marked_uncollectible_at or credited_at or month["start"],
           "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(abs(month["amounts"][0])),
           "Soll/Haben-Kennzeichen": op_switcher("S", month["amounts"][0]),
@@ -288,7 +288,7 @@ def createAccountingRecords(revenue_item):
           "Konto": config.account_prap,
           "Gegenkonto (ohne BU-Schlüssel)": accounting_props["revenue_account"],
           "BU-Schlüssel": accounting_props["prap_datev_tax_key"],
-          "Buchungstext": "pRAP aus {} / {}".format(created.strftime("%Y-%m"), text),
+          "Buchungstext": "PRAP aus {} / {}".format(created.strftime("%Y-%m"), text),
           "Belegfeld 1": number,
           "EU-Land u. UStID": eu_vat_id,
         })

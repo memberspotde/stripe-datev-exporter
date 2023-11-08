@@ -116,7 +116,7 @@ def create_creditnote_accounting_records(revenue_item):
         "Konto": accounting_props["revenue_account"],
         "Gegenkonto (ohne BU-Schlüssel)": config.account_prap,
         "BU-Schlüssel": accounting_props["prap_datev_tax_key"],
-        "Buchungstext": "pRAP nach {} / {}".format("{}..{}".format(forward_months[0]["start"].strftime("%Y-%m"), forward_months[-1]["start"].strftime("%Y-%m")) if len(forward_months) > 1 else forward_months[0]["start"].strftime("%Y-%m"), text),
+        "Buchungstext": "PRAP nach {} / {}".format("{}..{}".format(forward_months[0]["start"].strftime("%Y-%m"), forward_months[-1]["start"].strftime("%Y-%m")) if len(forward_months) > 1 else forward_months[0]["start"].strftime("%Y-%m"), text),
         "Belegfeld 1": number,
         "EU-Land u. UStID": eu_vat_id,
       })
@@ -130,7 +130,7 @@ def create_creditnote_accounting_records(revenue_item):
         "Konto": config.account_prap,
         "Gegenkonto (ohne BU-Schlüssel)": accounting_props["revenue_account"],
         "BU-Schlüssel": accounting_props["prap_datev_tax_key"],
-        "Buchungstext": "pRAP aus {} / {}".format(created.strftime("%Y-%m"), text),
+        "Buchungstext": "PRAP aus {} / {}".format(created.strftime("%Y-%m"), text),
         "Belegfeld 1": number,
         "EU-Land u. UStID": eu_vat_id,
       })
