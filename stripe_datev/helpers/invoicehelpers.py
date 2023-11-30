@@ -101,7 +101,8 @@ def get_line_item_amounts(line_item):
     if line_item_tax["inclusive"]:
       raise Exception("Inclusive tax not supported")
     else:
-      li_amount_net = line_item_tax["taxable_amount"]
+      li_amount_net = line_item_tax["taxable_amount"] if line_item_tax[
+        "taxable_amount"] is not None else line_item["amount_excluding_tax"]
       li_total = li_amount_net + line_item_tax["amount"]
 
   # In other cases there is no taxes on the invoice

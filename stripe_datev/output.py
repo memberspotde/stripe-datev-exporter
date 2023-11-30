@@ -172,7 +172,7 @@ def printRecords(textFileHandle, records, invoice_guid_dict: dict = None, fromTi
     str(config.mandenten_nr),  # Mandantennummer
     minTime.astimezone(config.accounting_tz).strftime(
       '%Y') + '0101',  # Wirtschaftsjahresbeginn
-    '4',  # Sachkontenlänge
+    '6',  # Sachkontenlänge
     minTime.astimezone(config.accounting_tz).strftime(
       '%Y%m%d'),  # Datum Beginn Buchungsstapel
     maxTime.astimezone(config.accounting_tz).strftime(
@@ -268,7 +268,7 @@ def printAccounts(textFileHandle, customers):
     str(config.mandenten_nr),  # Mandantennummer
     datetime.today().astimezone(config.accounting_tz).strftime(
       '%Y') + '0101',  # Wirtschaftsjahresbeginn
-    '4',  # Sachkontenlänge
+    '6',  # Sachkontenlänge
     '',  # Datum Beginn Buchungsstapel
     '',  # Datum Ende Buchungsstapel
     '',  # Bezeichnung (Vorlaufname, z. B. Buchungsstapel)
