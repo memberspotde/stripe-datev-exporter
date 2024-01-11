@@ -39,7 +39,7 @@ def combine_revenue_extf_csvs(out_path: str, out_dir_dl: str, month: str):
   print("combine following csv into one")
   for f in file_names:
     print(f"- {f}")
-  output_path = os.path.join(out_dir_dl, f"EXTF_{month}_combined.csv")
+  output_path = os.path.join(out_dir_dl, f"EXTF_{month}_revenue_combined.csv")
   with open(output_path, 'w', encoding="latin1", errors="replace", newline="\r\n") as fp:
     fp.write(lines)
 

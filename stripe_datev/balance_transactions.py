@@ -126,16 +126,17 @@ def create_accounting_records(balance_trans: list):
 
     transfer_amount = decimal.Decimal(trans.amount / 100)
 
-    records.append({
-      "date": created,
-      "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(abs(transfer_amount)),
-      "Soll/Haben-Kennzeichen": op_switcher("S", transfer_amount),
-      "WKZ Umsatz": "EUR",
-      "Konto": config.stripe_transit_account,
-      "Gegenkonto (ohne BU-Schlüssel)": acc_props["customer_account"],
-      "Buchungstext": "Stripe Payment ({})".format(trans.id),
-      "Belegfeld 1": number,
-    })
+    if transfer_amount != 0:
+      records.append({
+        "date": created,
+        "Umsatz (ohne Soll/Haben-Kz)": output.formatDecimal(abs(transfer_amount)),
+        "Soll/Haben-Kennzeichen": op_switcher("S", transfer_amount),
+        "WKZ Umsatz": "EUR",
+        "Konto": config.stripe_transit_account,
+        "Gegenkonto (ohne BU-Schlüssel)": acc_props["customer_account"],
+        "Buchungstext": "Stripe Payment ({})".format(trans.id),
+        "Belegfeld 1": number,
+      })
 
     fee_amount = decimal.Decimal(trans.fee) / 100
     if fee_amount != decimal.Decimal(0):
