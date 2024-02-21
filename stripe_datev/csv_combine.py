@@ -20,18 +20,21 @@ def combine_revenue_extf_csvs(out_path: str, out_dir_dl: str, month: str):
     print("duplicate files found")
 
   lines = ""
-  first = True
 
   for csv in csv_files:
     with open(csv, 'r', encoding="latin1") as f:
 
-      if first:
+      if csv.endswith(f"EXTF_{month}_Revenue.csv"):
+        print("found correct header file", csv)
         lines += f.readline()
         lines += f.readline()
-        first = False
-      else:
-        next(f)
-        next(f)
+        break
+
+  for csv in csv_files:
+    with open(csv, 'r', encoding="latin1") as f:
+
+      next(f)
+      next(f)
 
       for line in f:
         lines += line
@@ -39,7 +42,7 @@ def combine_revenue_extf_csvs(out_path: str, out_dir_dl: str, month: str):
   print("combine following csv into one")
   for f in file_names:
     print(f"- {f}")
-  output_path = os.path.join(out_dir_dl, f"EXTF_{month}_revenue_combined.csv")
+  output_path = os.path.join(out_dir_dl, f"EXTF_{month}_combined_revenue.csv")
   with open(output_path, 'w', encoding="latin1", errors="replace", newline="\r\n") as fp:
     fp.write(lines)
 

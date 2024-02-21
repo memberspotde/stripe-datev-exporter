@@ -225,7 +225,7 @@ class StripeDatevCli(object):
       stripe_datev.output.writeRecords(os.path.join(
         datevDir, name), records, invoice_guid_dict, bezeichung="Stripe Revenue {} from {}".format(rev_month, thisMonth))
 
-    combine_revenue_extf_csvs(out_dir, out_dir_dl, thisMonth)
+    combine_revenue_extf_csvs(out_dir, datevDir, thisMonth)
 
     # Datev balance transactions
 

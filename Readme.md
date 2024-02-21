@@ -26,3 +26,6 @@ invoice in_1MYQ1wDc6Ds2E1iCLNnFkltZ 91506
 
 1. source env/bin/activate
 2. python3 stripe-datev-cli.py download 2023 12
+
+Check via Excel
+=WENN(B3="S";WENN(LINKS(O3;9)="PRAP nach";A3*-1;A3);A3*-1)
